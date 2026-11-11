@@ -1,0 +1,33 @@
+{
+  "id": "./display.html",
+  "name": "Perfect Smile Display",
+  "short_name": "PS Display",
+  "description": "Vorschau des Labormanagement-Systems Perfect Smile (erfundene Daten)",
+  "lang": "de",
+  "start_url": "./display.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#eef2f6",
+  "theme_color": "#075985",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

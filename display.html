@@ -1,0 +1,5323 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Perfect Smile Display</title>
+<meta name="description" content="Vorschau des Labormanagement-Systems Perfect Smile mit erfundenen Daten">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#075985">
+<meta name="color-scheme" content="light dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="PS Display">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="display.webmanifest">
+<style>
+/* Perfect Smile · Vorschau-Apps
+   Layout: eine App-Schale je Gerät (Handy: Kopf, Inhalt, Tableiste; iPad: Kopf, Inhalt; Display: Vollbild-Raster).
+   Farben folgen der echten Anwendung (sky-800 als Akzent, kühle Schiefer-Neutraltöne), Schrift ist die Systemschrift
+   des Geräts (SF Pro auf iPhone/iPad, Roboto auf Android), damit es sich wie eine native App anfühlt und offline läuft.
+   NFR-09: Mindestschrift 16 px, Kontrast nach WCAG AA. LST-01: Schaltflächen mindestens 44 × 44 Punkt. */
+
+:root {
+  --bg: #eef2f6;
+  --flaeche: #ffffff;
+  --flaeche-2: #f6f8fb;
+  --tinte: #0e1a27;
+  --leise: #47586b;
+  --linie: #d3dce6;
+  --akzent: #075985;
+  --akzent-tief: #054468;
+  --akzent-tinte: #ffffff;
+  --akzent-weich: #e1f0f9;
+  --rot: #b42318;
+  --rot-weich: #fde8e5;
+  --gelb: #7a4d00;
+  --gelb-weich: #fff1c2;
+  --gelb-rand: #e8b931;
+  --gruen: #12693f;
+  --gruen-weich: #ddf3e6;
+  --violett: #5b3aa8;
+  --violett-weich: #ece6fa;
+  --tuerkis: #0b6461;
+  --tuerkis-weich: #d9f1ef;
+  --grau-weich: #e8edf2;
+  --schatten: 0 1px 2px rgb(14 26 39 / 6%), 0 4px 14px rgb(14 26 39 / 7%);
+  --schatten-hoch: 0 10px 40px rgb(14 26 39 / 22%);
+  --schrift:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --schrift-titel:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI",
+    Roboto, sans-serif;
+  --radius: 14px;
+  --radius-klein: 10px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1219;
+    --flaeche: #131d28;
+    --flaeche-2: #18242f;
+    --tinte: #e9eff5;
+    --leise: #a3b3c4;
+    --linie: #2a3a4c;
+    --akzent: #5db7e8;
+    --akzent-tief: #8ccdf0;
+    --akzent-tinte: #03233a;
+    --akzent-weich: #12324a;
+    --rot: #ff8a7f;
+    --rot-weich: #3d1a18;
+    --gelb: #ffd166;
+    --gelb-weich: #3a2e0c;
+    --gelb-rand: #b88b1c;
+    --gruen: #6fd6a0;
+    --gruen-weich: #12341f;
+    --violett: #c3aefc;
+    --violett-weich: #2a2145;
+    --tuerkis: #6fd8d2;
+    --tuerkis-weich: #0f3432;
+    --grau-weich: #223140;
+    --schatten: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 14px rgb(0 0 0 / 25%);
+    --schatten-hoch: 0 10px 40px rgb(0 0 0 / 55%);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1219;
+  --flaeche: #131d28;
+  --flaeche-2: #18242f;
+  --tinte: #e9eff5;
+  --leise: #a3b3c4;
+  --linie: #2a3a4c;
+  --akzent: #5db7e8;
+  --akzent-tief: #8ccdf0;
+  --akzent-tinte: #03233a;
+  --akzent-weich: #12324a;
+  --rot: #ff8a7f;
+  --rot-weich: #3d1a18;
+  --gelb: #ffd166;
+  --gelb-weich: #3a2e0c;
+  --gelb-rand: #b88b1c;
+  --gruen: #6fd6a0;
+  --gruen-weich: #12341f;
+  --violett: #c3aefc;
+  --violett-weich: #2a2145;
+  --tuerkis: #6fd8d2;
+  --tuerkis-weich: #0f3432;
+  --grau-weich: #223140;
+  --schatten: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 14px rgb(0 0 0 / 25%);
+  --schatten-hoch: 0 10px 40px rgb(0 0 0 / 55%);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--tinte);
+  font-family: var(--schrift);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+[hidden] {
+  display: none !important;
+}
+svg {
+  width: 1.25em;
+  height: 1.25em;
+  flex-shrink: 0;
+}
+.eintrag > svg:last-child {
+  color: var(--leise);
+  width: 22px;
+  height: 22px;
+}
+.stopp-nr svg {
+  width: 22px;
+  height: 22px;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+a {
+  color: var(--akzent);
+}
+:focus-visible {
+  outline: 3px solid var(--akzent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--schrift-titel);
+  text-wrap: balance;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+p {
+  margin: 0;
+}
+.zahl,
+.nr {
+  font-variant-numeric: tabular-nums;
+}
+.leise {
+  color: var(--leise);
+}
+.fett {
+  font-weight: 650;
+}
+.klein {
+  font-size: 0.9375rem;
+} /* 15 px nur für Zusatzangaben neben 16-px-Text; Fließtext bleibt 16 px */
+.vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- App-Schale ---------- */
+#app {
+  height: 100%;
+}
+.schale {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg);
+  position: relative;
+}
+.kopf {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
+    10px max(16px, env(safe-area-inset-left, 0px));
+  background: color-mix(in srgb, var(--flaeche) 88%, transparent);
+  backdrop-filter: saturate(1.6) blur(14px);
+  -webkit-backdrop-filter: saturate(1.6) blur(14px);
+  border-bottom: 1px solid var(--linie);
+  min-height: 56px;
+}
+.kopf h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kopf .unter {
+  display: block;
+  font-family: var(--schrift);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--leise);
+  letter-spacing: 0;
+}
+.inhalt {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px max(16px, env(safe-area-inset-right, 0px)) 24px
+    max(16px, env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.inhalt > * {
+  flex-shrink: 0;
+}
+.tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  background: color-mix(in srgb, var(--flaeche) 92%, transparent);
+  backdrop-filter: saturate(1.6) blur(14px);
+  -webkit-backdrop-filter: saturate(1.6) blur(14px);
+  border-top: 1px solid var(--linie);
+  padding: 6px max(8px, env(safe-area-inset-right, 0px))
+    calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 52px;
+  border: 0;
+  background: none;
+  color: var(--leise);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: 12px;
+  position: relative;
+}
+.tab svg {
+  width: 26px;
+  height: 26px;
+}
+.tab[aria-current="page"] {
+  color: var(--akzent);
+}
+.tab .punkt {
+  position: absolute;
+  top: 4px;
+  left: calc(50% + 8px);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--rot);
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 18px;
+}
+
+/* Handy auf großem Bildschirm: im Geräterahmen zeigen */
+@media (min-width: 760px) {
+  body.mit-rahmen {
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+  body.mit-rahmen #app {
+    width: 410px;
+    height: min(880px, calc(100vh - 48px));
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 10px #10171f,
+      0 0 0 11px #3a4653,
+      var(--schatten-hoch);
+    position: relative;
+  }
+  body.mit-rahmen .schale {
+    border-radius: 44px;
+  }
+}
+
+/* ---------- Bausteine ---------- */
+.karte {
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: var(--radius);
+  box-shadow: var(--schatten);
+}
+.karte.innen {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.abschnitt {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.abschnitt > h2,
+.ueberschrift {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--leise);
+  font-weight: 700;
+  font-family: var(--schrift);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.abschnitt > h2 a,
+.abschnitt > h2 button {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.9375rem;
+}
+.zeile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.zeile.oben {
+  align-items: flex-start;
+}
+.wachse {
+  flex: 1;
+  min-width: 0;
+}
+.stapel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.abstand-8 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.umbruch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-weight: 650;
+  font-size: 1rem;
+  background: var(--akzent);
+  color: var(--akzent-tinte);
+  transition:
+    transform 0.08s ease,
+    filter 0.15s ease;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.knopf:active {
+  transform: scale(0.98);
+  filter: brightness(0.94);
+}
+.knopf[disabled],
+.knopf[aria-disabled="true"] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.knopf.voll {
+  width: 100%;
+}
+.knopf.gross {
+  min-height: 58px;
+  font-size: 1.125rem;
+  border-radius: 14px;
+}
+.knopf.zweit {
+  background: var(--flaeche);
+  color: var(--akzent);
+  border-color: var(--linie);
+}
+.knopf.weich {
+  background: var(--akzent-weich);
+  color: var(--akzent-tief);
+}
+.knopf.gefahr {
+  background: var(--rot);
+  color: #fff;
+}
+.knopf.gruen {
+  background: var(--gruen);
+  color: #fff;
+}
+:root[data-theme="dark"] .knopf.gruen {
+  color: #04210f;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .knopf.gruen {
+    color: #04210f;
+  }
+  :root:not([data-theme="light"]) .knopf.gefahr {
+    color: #2a0906;
+  }
+}
+:root[data-theme="dark"] .knopf.gefahr {
+  color: #2a0906;
+}
+.knopf.text {
+  background: none;
+  color: var(--akzent);
+  padding-inline: 8px;
+  min-height: 44px;
+}
+.knopf svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.icon-knopf {
+  width: 44px;
+  height: 44px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 0;
+  background: none;
+  color: var(--tinte);
+  position: relative;
+  flex-shrink: 0;
+}
+.icon-knopf svg {
+  width: 26px;
+  height: 26px;
+}
+.icon-knopf .punkt {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--rot);
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 18px;
+  padding: 0 5px;
+  font-weight: 700;
+}
+
+.pille {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 650;
+  white-space: nowrap;
+  background: var(--grau-weich);
+  color: var(--tinte);
+  line-height: 1.4;
+}
+.pille::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.85;
+}
+.pille.ohne-punkt::before {
+  display: none;
+}
+.st-angenommen {
+  background: var(--grau-weich);
+  color: var(--tinte);
+}
+.st-zugewiesen {
+  background: var(--akzent-weich);
+  color: var(--akzent-tief);
+}
+.st-in_fertigung {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+.st-qualitaetskontrolle {
+  background: var(--violett-weich);
+  color: var(--violett);
+}
+.st-versandbereit {
+  background: var(--tuerkis-weich);
+  color: var(--tuerkis);
+}
+.st-ausgeliefert {
+  background: var(--gruen-weich);
+  color: var(--gruen);
+}
+.st-abgerechnet {
+  background: var(--grau-weich);
+  color: var(--leise);
+}
+.st-rueckfrage {
+  background: var(--gelb-weich);
+  color: var(--gelb);
+}
+.st-storniert {
+  background: var(--grau-weich);
+  color: var(--leise);
+  text-decoration: line-through;
+}
+:root[data-theme="dark"] .st-in_fertigung {
+  background: #172a4d;
+  color: #a9c8ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .st-in_fertigung {
+    background: #172a4d;
+    color: #a9c8ff;
+  }
+}
+.z-offen {
+  background: var(--akzent-weich);
+  color: var(--akzent-tief);
+}
+.z-bezahlt {
+  background: var(--gruen-weich);
+  color: var(--gruen);
+}
+.z-teilweise {
+  background: var(--gelb-weich);
+  color: var(--gelb);
+}
+.z-ueberfaellig {
+  background: var(--rot-weich);
+  color: var(--rot);
+}
+.z-entwurf {
+  background: var(--grau-weich);
+  color: var(--leise);
+}
+
+/* Terminampel (AUF-08): rot = überfällig, gelb = heute fällig */
+.ampel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.ampel.rot {
+  color: var(--rot);
+}
+.ampel.gelb {
+  color: var(--gelb);
+}
+.ampel.rot::before,
+.ampel.gelb::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.streifen {
+  position: relative;
+  overflow: hidden;
+}
+.streifen.rot {
+  box-shadow:
+    inset 5px 0 0 var(--rot),
+    var(--schatten);
+}
+.streifen.gelb {
+  box-shadow:
+    inset 5px 0 0 var(--gelb-rand),
+    var(--schatten);
+}
+
+.liste {
+  display: flex;
+  flex-direction: column;
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: var(--radius);
+  box-shadow: var(--schatten);
+  overflow: hidden;
+}
+.liste > .eintrag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  min-height: 60px;
+  border: 0;
+  border-top: 1px solid var(--linie);
+  background: none;
+  text-align: left;
+  width: 100%;
+}
+.liste > .eintrag:first-child {
+  border-top: 0;
+}
+.liste > button.eintrag:active,
+.liste > a.eintrag:active {
+  background: var(--flaeche-2);
+}
+.liste > a.eintrag {
+  color: inherit;
+  text-decoration: none;
+}
+.pfeil {
+  color: var(--leise);
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.feld {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.feld label,
+.feld .label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.eingabe {
+  min-height: 50px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  width: 100%;
+  font-size: 1rem;
+}
+textarea.eingabe {
+  min-height: 96px;
+  resize: vertical;
+}
+.eingabe:focus {
+  outline: 3px solid color-mix(in srgb, var(--akzent) 45%, transparent);
+  border-color: var(--akzent);
+}
+.fehler {
+  background: var(--rot-weich);
+  color: var(--rot);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 600;
+}
+.hinweis {
+  background: var(--akzent-weich);
+  color: var(--akzent-tief);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.hinweis.gelb {
+  background: var(--gelb-weich);
+  color: var(--gelb);
+}
+.hinweis.gruen {
+  background: var(--gruen-weich);
+  color: var(--gruen);
+}
+.hinweis.rot {
+  background: var(--rot-weich);
+  color: var(--rot);
+}
+.hinweis svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.segment {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  background: var(--grau-weich);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 3px;
+}
+.segment button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  font-weight: 600;
+  color: var(--leise);
+  font-size: 0.9375rem;
+}
+.segment button[aria-pressed="true"] {
+  background: var(--flaeche);
+  color: var(--tinte);
+  box-shadow: var(--schatten);
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px;
+  margin: -2px;
+}
+.chips::-webkit-scrollbar {
+  display: none;
+}
+.chip {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chip[aria-pressed="true"] {
+  background: var(--tinte);
+  color: var(--bg);
+  border-color: var(--tinte);
+}
+.chip .anz {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+.leer {
+  text-align: center;
+  color: var(--leise);
+  padding: 28px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.leer svg {
+  width: 44px;
+  height: 44px;
+  opacity: 0.6;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--schrift-titel);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+.logo-zeichen {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--akzent);
+  color: var(--akzent-tinte);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.logo-zeichen svg {
+  width: 24px;
+  height: 24px;
+}
+.demo-band {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gelb);
+  background: var(--gelb-weich);
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Kennzahl-Kacheln (DSH-01) */
+.kacheln {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.kachel {
+  text-align: left;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: var(--schatten);
+  min-height: 104px;
+}
+.kachel .wert {
+  font-family: var(--schrift-titel);
+  font-size: 2.25rem;
+  font-weight: 750;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.kachel .was {
+  font-weight: 600;
+}
+.kachel.rot .wert {
+  color: var(--rot);
+}
+.kachel.gelb .wert {
+  color: var(--gelb);
+}
+.kachel:active {
+  transform: scale(0.985);
+}
+
+/* Ebene für Blätter und Meldungen */
+#ebene {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.blatt-hg {
+  position: absolute;
+  inset: 0;
+  background: rgb(5 12 20 / 45%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.blatt {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100% - 40px - env(safe-area-inset-top, 0px));
+  overflow-y: auto;
+  background: var(--flaeche);
+  border-radius: 22px 22px 0 0;
+  box-shadow: var(--schatten-hoch);
+  padding: 10px max(20px, env(safe-area-inset-right, 0px))
+    calc(20px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+  transform: translateY(100%);
+  transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+#ebene.offen .blatt-hg {
+  opacity: 1;
+}
+#ebene.offen .blatt {
+  transform: none;
+}
+.blatt-griff {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--linie);
+  align-self: center;
+  flex-shrink: 0;
+}
+.blatt h2 {
+  font-size: 1.375rem;
+}
+.blatt .knoepfe {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (min-width: 760px) {
+  #ebene {
+    align-items: center;
+  }
+  .blatt {
+    border-radius: 22px;
+    max-height: calc(100% - 64px);
+    transform: translateY(24px) scale(0.98);
+    opacity: 0;
+    transition:
+      transform 0.22s ease,
+      opacity 0.18s ease;
+  }
+  #ebene.offen .blatt {
+    opacity: 1;
+  }
+  .blatt-griff {
+    display: none;
+  }
+  .blatt .knoepfe {
+    flex-direction: row-reverse;
+  }
+  .blatt .knoepfe .knopf {
+    flex: 1;
+  }
+}
+#meldungen {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  padding-inline: 16px;
+}
+.meldung {
+  pointer-events: auto;
+  max-width: 520px;
+  background: var(--tinte);
+  color: var(--bg);
+  padding: 12px 16px;
+  border-radius: 14px;
+  box-shadow: var(--schatten-hoch);
+  font-weight: 600;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  animation: rein 0.25s ease both;
+}
+.meldung svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.meldung.weg {
+  animation: raus 0.25s ease both;
+}
+@keyframes rein {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes raus {
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+.fortschritt {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--grau-weich);
+  overflow: hidden;
+}
+.fortschritt > i {
+  display: block;
+  height: 100%;
+  background: var(--gruen);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.info-raster {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px 16px;
+}
+.info-raster dt {
+  color: var(--leise);
+}
+.info-raster dd {
+  margin: 0;
+  font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.verlauf {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.verlauf li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 12px;
+  padding-bottom: 14px;
+  position: relative;
+}
+.verlauf li::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--akzent);
+  margin-top: 5px;
+  margin-left: 3px;
+}
+.verlauf li::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 20px;
+  bottom: 0;
+  width: 2px;
+  background: var(--linie);
+}
+.verlauf li:last-child::after {
+  display: none;
+}
+
+.betrag-zeile {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.betrag-zeile.summe {
+  font-size: 1.25rem;
+  font-weight: 750;
+  border-top: 2px solid var(--tinte);
+  padding-top: 8px;
+}
+
+/* Diagramme */
+.diagramm svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.diagramm text {
+  fill: var(--leise);
+  font-size: 12px;
+  font-family: var(--schrift);
+}
+.legende {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 0.9375rem;
+  color: var(--leise);
+}
+.legende i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+.balken-zeile {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr) 3.4em;
+  gap: 10px;
+  align-items: center;
+}
+.balken {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--grau-weich);
+  overflow: hidden;
+}
+.balken > i {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--akzent);
+}
+.balken > i.hoch {
+  background: var(--gelb-rand);
+}
+
+/* ---------- Anmeldung ---------- */
+.anmeldung {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: calc(32px + env(safe-area-inset-top, 0px)) max(22px, env(safe-area-inset-right, 0px))
+    calc(24px + env(safe-area-inset-bottom, 0px)) max(22px, env(safe-area-inset-left, 0px));
+  overflow-y: auto;
+  background: radial-gradient(120% 60% at 50% 0%, var(--akzent-weich), transparent 70%), var(--bg);
+}
+.anmeldung .marke {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding-top: 12px;
+}
+.anmeldung .marke .logo-zeichen {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  box-shadow: var(--schatten-hoch);
+}
+.anmeldung .marke .logo-zeichen svg {
+  width: 46px;
+  height: 46px;
+}
+.anmeldung .marke h1 {
+  font-size: 1.75rem;
+}
+.code-felder {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+.code-felder span {
+  height: 58px;
+  border-radius: 12px;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  display: grid;
+  place-items: center;
+  font-size: 1.625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.code-felder span.aktiv {
+  border-color: var(--akzent);
+  outline: 3px solid color-mix(in srgb, var(--akzent) 35%, transparent);
+}
+
+/* Ziffernfeld (LST-02 PIN, TOTP) */
+.ziffern {
+  display: grid;
+  grid-template-columns: repeat(3, 84px);
+  gap: 14px;
+  justify-content: center;
+}
+.ziffer {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: var(--schrift-titel);
+  box-shadow: var(--schatten);
+  font-variant-numeric: tabular-nums;
+}
+.ziffer:active {
+  background: var(--akzent-weich);
+  transform: scale(0.96);
+}
+.ziffer.leise-taste {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--akzent);
+  font-family: var(--schrift);
+}
+.pin-punkte {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+.pin-punkte i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--leise);
+}
+.pin-punkte i.voll {
+  background: var(--tinte);
+  border-color: var(--tinte);
+}
+.wackeln {
+  animation: wackeln 0.35s ease;
+}
+@keyframes wackeln {
+  20%,
+  60% {
+    transform: translateX(-8px);
+  }
+  40%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+
+/* ---------- Fahrer ---------- */
+.stopp {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.stopp-kopf {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.stopp-nr {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 750;
+  background: var(--akzent-weich);
+  color: var(--akzent-tief);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.stopp.erledigt {
+  opacity: 0.72;
+}
+.stopp.erledigt .stopp-nr {
+  background: var(--gruen-weich);
+  color: var(--gruen);
+}
+.stopp.naechster {
+  outline: 2px solid var(--akzent);
+  outline-offset: -1px;
+}
+.art {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.art.lieferung {
+  color: var(--gruen);
+}
+.art.abholung {
+  color: var(--akzent);
+}
+.art svg {
+  width: 18px;
+  height: 18px;
+}
+.bestaetigt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gruen);
+  font-weight: 700;
+}
+.bestaetigt svg {
+  width: 22px;
+  height: 22px;
+}
+.tel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.tel svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- iPad ---------- */
+.ipad .kopf {
+  min-height: 64px;
+}
+.ipad .inhalt {
+  padding-top: 20px;
+  gap: 20px;
+}
+.ipad-leiste {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.ipad-leiste .knopf {
+  min-height: 48px;
+}
+@media (max-width: 899px) {
+  .ipad-leiste .knopf .txt {
+    display: none;
+  }
+  .ipad-leiste .knopf {
+    padding-inline: 12px;
+  }
+}
+.personen {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+.person {
+  min-height: 110px;
+  border-radius: 18px;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  box-shadow: var(--schatten);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.125rem;
+  font-weight: 650;
+  padding: 14px;
+}
+.person .kuerzel {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--akzent-weich);
+  color: var(--akzent-tief);
+  display: grid;
+  place-items: center;
+  font-weight: 750;
+  font-size: 1.125rem;
+}
+.person[disabled] {
+  opacity: 0.5;
+}
+.person:active {
+  transform: scale(0.98);
+}
+.auftrag-tabelle {
+  width: 100%;
+  border-collapse: collapse;
+}
+.auftrag-tabelle th {
+  text-align: left;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--leise);
+  padding: 10px 14px;
+  font-weight: 700;
+}
+.auftrag-tabelle td {
+  padding: 0;
+  border-top: 1px solid var(--linie);
+}
+.auftrag-tabelle td > button {
+  width: 100%;
+  min-height: 68px;
+  padding: 12px 14px;
+  border: 0;
+  background: none;
+  text-align: left;
+  display: block;
+  font-size: 1.0625rem;
+}
+.auftrag-tabelle tr:active td {
+  background: var(--flaeche-2);
+}
+.auftrag-tabelle tr.rot td:first-child {
+  box-shadow: inset 5px 0 0 var(--rot);
+}
+.auftrag-tabelle tr.gelb td:first-child {
+  box-shadow: inset 5px 0 0 var(--gelb-rand);
+}
+.auftrag-tabelle tr.neu td {
+  animation: neu 2.4s ease;
+}
+@keyframes neu {
+  0%,
+  40% {
+    background: var(--akzent-weich);
+  }
+  100% {
+    background: transparent;
+  }
+}
+.ipad-raster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (orientation: landscape) and (min-width: 900px) {
+  .ipad-raster {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  }
+}
+.position {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.position h3 {
+  font-size: 1.25rem;
+}
+.position .knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.position .knoepfe .knopf {
+  min-height: 56px;
+  font-size: 1.0625rem;
+  padding-inline: 20px;
+}
+.timer-laeuft {
+  background: var(--gruen-weich);
+  color: var(--gruen);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.25rem;
+}
+.timer-laeuft i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: puls 1.4s ease infinite;
+}
+@keyframes puls {
+  50% {
+    opacity: 0.25;
+  }
+}
+.timer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--gruen-weich);
+  color: var(--gruen);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  border: 0;
+}
+.timer-chip i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: puls 1.4s ease infinite;
+}
+.stepper {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 64px;
+  gap: 10px;
+  align-items: center;
+}
+.stepper button {
+  height: 64px;
+  border-radius: 16px;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  font-size: 2rem;
+  font-weight: 600;
+}
+.stepper output {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--schrift-titel);
+}
+.auswahl-gitter {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+.auswahl {
+  min-height: 64px;
+  border-radius: 14px;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+.auswahl[aria-pressed="true"] {
+  border-color: var(--akzent);
+  background: var(--akzent-weich);
+  outline: 2px solid var(--akzent);
+  outline-offset: -2px;
+}
+.auswahl .leise {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+.ipad .blatt {
+  max-width: 640px;
+}
+.offline-band {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px
+    max(16px, env(safe-area-inset-left, 0px));
+  background: var(--gelb-weich);
+  color: var(--gelb);
+  font-weight: 650;
+  border-bottom: 1px solid var(--gelb-rand);
+}
+.offline-band svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.nicht-gesendet {
+  background: var(--gelb-weich);
+  color: var(--gelb);
+}
+.scanner {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  max-width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #0b1219;
+  display: grid;
+  place-items: center;
+}
+.scanner video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.scanner .rahmen {
+  width: 52%;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  border: 4px solid rgb(255 255 255 / 85%);
+  box-shadow: 0 0 0 999px rgb(0 0 0 / 35%);
+  position: relative;
+}
+.scanner .linie {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  height: 3px;
+  background: #5db7e8;
+  box-shadow: 0 0 12px #5db7e8;
+  animation: scan 2.2s ease-in-out infinite;
+}
+@keyframes scan {
+  0%,
+  100% {
+    top: 8%;
+  }
+  50% {
+    top: 90%;
+  }
+}
+.scanner .text {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #fff;
+  font-weight: 650;
+  text-shadow: 0 1px 4px #000;
+}
+.laufzettel {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.qr {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: #fff;
+  padding: 4px;
+  border: 1px solid var(--linie);
+}
+.qr svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.leerlauf {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  background: rgb(5 12 20 / 55%);
+  padding: 24px;
+}
+.leerlauf .karte {
+  max-width: 460px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+}
+
+/* ---------- Labor-Display (KAL-01 bis KAL-03, NFR-09: lesbar aus 3 m) ---------- */
+.display {
+  --d-bg: #071019;
+  --d-flaeche: #0f1b27;
+  --d-linie: #22344a;
+  --d-tinte: #f3f7fb;
+  --d-leise: #a9bccf;
+  --d-rot: #ff6b5e;
+  --d-gelb: #ffd24d;
+  --d-akzent: #6cc4f0;
+  background: var(--d-bg);
+  color: var(--d-tinte);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color-scheme: dark;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px))
+    calc(18px + env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px));
+  gap: 18px;
+  font-size: clamp(18px, 1.55vw, 30px);
+}
+.display-kopf {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.display-kopf .logo {
+  font-size: 1.35em;
+}
+.display-kopf .logo-zeichen {
+  background: var(--d-akzent);
+  color: #04263a;
+  width: 1.9em;
+  height: 1.9em;
+}
+.display-kopf .logo-zeichen svg {
+  width: 1.25em;
+  height: 1.25em;
+}
+.display-uhr {
+  margin-left: auto;
+  text-align: right;
+}
+.display-uhr b {
+  font-size: 2.2em;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  display: block;
+  font-family: var(--schrift-titel);
+}
+.display-stand {
+  font-size: 0.8em;
+  color: var(--d-leise);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.display-stand i {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background: #4fd18b;
+}
+.display-stand.weg {
+  color: var(--d-rot);
+  font-weight: 700;
+}
+.display-stand.weg i {
+  background: var(--d-rot);
+}
+.display-spalten {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.display-spalte {
+  background: var(--d-flaeche);
+  border: 1px solid var(--d-linie);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.display-spalte h2 {
+  font-size: 1.15em;
+  padding: 0.7em 0.9em;
+  border-bottom: 1px solid var(--d-linie);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+.display-spalte h2 span {
+  color: var(--d-leise);
+  font-weight: 600;
+  font-size: 0.8em;
+  font-family: var(--schrift);
+}
+.display-liste {
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.display-tag {
+  padding: 0.45em 0.9em;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--d-leise);
+  font-weight: 700;
+  background: rgb(255 255 255 / 3%);
+}
+.display-eintrag {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.15em 0.8em;
+  padding: 0.6em 0.9em;
+  border-top: 1px solid var(--d-linie);
+}
+.display-eintrag.rot {
+  box-shadow: inset 0.35em 0 0 var(--d-rot);
+  background: rgb(255 107 94 / 10%);
+}
+.display-eintrag.gelb {
+  box-shadow: inset 0.35em 0 0 var(--d-gelb);
+  background: rgb(255 210 77 / 8%);
+}
+.display-eintrag .nr {
+  font-weight: 750;
+  font-size: 1.05em;
+}
+.display-eintrag .praxis {
+  color: var(--d-tinte);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.display-eintrag .rechts {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15em;
+}
+.display-eintrag .tech {
+  font-weight: 750;
+  font-size: 1.05em;
+  background: rgb(108 196 240 / 16%);
+  color: var(--d-akzent);
+  border-radius: 0.4em;
+  padding: 0 0.4em;
+}
+.display-eintrag .st {
+  font-size: 0.8em;
+  color: var(--d-leise);
+  white-space: nowrap;
+}
+.display-eintrag .ueber {
+  color: var(--d-rot);
+  font-weight: 750;
+}
+.display-eintrag .heute {
+  color: var(--d-gelb);
+  font-weight: 750;
+}
+.display-fuss {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--d-leise);
+  font-size: 0.75em;
+  flex-wrap: wrap;
+}
+.display-fuss .legende-d {
+  display: flex;
+  gap: 18px;
+}
+.display-fuss .legende-d span::before {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  margin-right: 0.4em;
+  vertical-align: -0.05em;
+}
+.display-fuss .l-rot::before {
+  background: var(--d-rot);
+}
+.display-fuss .l-gelb::before {
+  background: var(--d-gelb);
+}
+.display-mehr {
+  padding: 0.5em 0.9em;
+  color: var(--d-leise);
+  font-size: 0.8em;
+  border-top: 1px solid var(--d-linie);
+}
+.display .icon-knopf {
+  color: var(--d-leise);
+}
+@media (max-width: 900px), (orientation: portrait) {
+  .display {
+    overflow-y: auto;
+    font-size: 20px;
+  }
+  .display-spalten {
+    grid-template-columns: minmax(0, 1fr);
+    flex: none;
+  }
+  .display-liste {
+    overflow: visible;
+  }
+}
+
+/* ---------- Startseite (Auswahl der Vorschau) ---------- */
+.start {
+  min-height: 100%;
+  overflow-y: auto;
+  padding: calc(28px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px))
+    calc(28px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+  background: radial-gradient(90% 50% at 50% 0%, var(--akzent-weich), transparent 70%), var(--bg);
+}
+.start-innen {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.start h1 {
+  font-size: clamp(1.75rem, 4vw, 2.6rem);
+  line-height: 1.12;
+}
+.start .lead {
+  font-size: 1.125rem;
+  color: var(--leise);
+  max-width: 60ch;
+}
+.geraete {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.geraet {
+  text-align: left;
+  border: 1px solid var(--linie);
+  background: var(--flaeche);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--schatten);
+}
+.geraet:active {
+  transform: scale(0.99);
+}
+.geraet .bild {
+  height: 132px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, var(--akzent-weich), var(--flaeche-2));
+  display: grid;
+  place-items: center;
+  color: var(--akzent);
+}
+.geraet .bild svg {
+  height: 100px;
+  width: auto;
+}
+.geraet h2 {
+  font-size: 1.375rem;
+}
+.geraet ul {
+  margin: 0;
+  padding-left: 1.1em;
+  color: var(--leise);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.installieren {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+</style>
+</head>
+<body>
+<div id="app"></div><div id="ebene" hidden></div><div id="meldungen" aria-live="polite"></div>
+<script>
+/* Perfect Smile · Vorschau – gemeinsamer Kern: Format (SYS-06), Zustand, Navigation, Blätter, Meldungen. */
+(function () {
+  "use strict";
+  const PS = (window.PS = window.PS || {});
+
+  // ---------- Format: Datum TT.MM.JJJJ, 24-Stunden-Zeit, Euro mit Komma, Anzeige in Europe/Berlin ----------
+  const fmt = new Intl.DateTimeFormat("de-DE", {
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  });
+  function teile(d) {
+    const o = {};
+    for (const p of fmt.formatToParts(d)) o[p.type] = p.value;
+    return o;
+  }
+  PS.tagVon = (d) => {
+    const t = teile(d);
+    return `${t.year}-${t.month}-${t.day}`;
+  };
+  PS.heute = () => PS.tagVon(new Date());
+  PS.datum = (x) => {
+    if (typeof x === "string") {
+      const [j, m, t] = x.slice(0, 10).split("-");
+      return `${t}.${m}.${j}`;
+    }
+    const t = teile(x);
+    return `${t.day}.${t.month}.${t.year}`;
+  };
+  PS.datumKurz = (tag) => {
+    const [, m, t] = tag.split("-");
+    return `${t}.${m}.`;
+  };
+  PS.zeit = (d) => {
+    const t = teile(typeof d === "string" ? new Date(d) : d);
+    return `${t.hour}:${t.minute}`;
+  };
+  PS.uhr = (d) => {
+    const t = teile(d);
+    return `${t.hour}:${t.minute}:${t.second}`;
+  };
+  PS.stundeBerlin = () => Number(teile(new Date()).hour);
+  const WT = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+  PS.wtNr = (tag) => new Date(tag + "T12:00:00Z").getUTCDay();
+  PS.wochentag = (tag) => WT[PS.wtNr(tag)];
+  PS.wtKurz = (tag) => WT[PS.wtNr(tag)].slice(0, 2);
+  PS.plusTage = (tag, n) => {
+    const d = new Date(tag + "T12:00:00Z");
+    d.setUTCDate(d.getUTCDate() + n);
+    return d.toISOString().slice(0, 10);
+  };
+  PS.istWerktag = (tag) => {
+    const w = PS.wtNr(tag);
+    return w !== 0 && w !== 6;
+  };
+  PS.plusArbeitstage = (tag, n) => {
+    let d = tag;
+    const s = n < 0 ? -1 : 1;
+    let k = Math.abs(n);
+    while (k > 0) {
+      d = PS.plusTage(d, s);
+      if (PS.istWerktag(d)) k--;
+    }
+    return d;
+  };
+  PS.tageZwischen = (a, b) =>
+    Math.round((new Date(b + "T12:00:00Z") - new Date(a + "T12:00:00Z")) / 86400000);
+  PS.tagName = (tag) => {
+    const h = PS.heute();
+    const d = PS.tageZwischen(h, tag);
+    if (d === 0) return "Heute";
+    if (d === 1) return "Morgen";
+    if (d === -1) return "Gestern";
+    return `${PS.wochentag(tag)}, ${PS.datumKurz(tag)}`;
+  };
+  /** Ganze Cent → „1.234,56 €“ (nie toLocaleString, wie in der echten Anwendung) */
+  PS.euro = (cent) => {
+    const neg = cent < 0;
+    const c = Math.abs(Math.round(cent));
+    const e = String(Math.floor(c / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return `${neg ? "−" : ""}${e},${String(c % 100).padStart(2, "0")} €`;
+  };
+  PS.euroKurz = (cent) => {
+    const e = Math.round(cent / 100);
+    if (Math.abs(e) >= 1000) return `${String(Math.round(e / 100) / 10).replace(".", ",")} Tsd. €`;
+    return `${e} €`;
+  };
+  /** „1.234,5“ oder „12,50“ → Cent; null bei ungültiger Eingabe */
+  PS.leseEuro = (text) => {
+    const t = String(text).trim().replace(/\s|€/g, "").replace(/\./g, "");
+    if (!/^\d+(,\d{1,2})?$/.test(t)) return null;
+    const [e, c = "0"] = t.split(",");
+    return Number(e) * 100 + Number(c.padEnd(2, "0"));
+  };
+  PS.dauer = (min) =>
+    min < 60 ? `${min} min` : `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, "0")} min`;
+  PS.stunden = (min) => `${String(Math.round(min / 6) / 10).replace(".", ",")} h`;
+  PS.prozent = (x) => `${String(Math.round(x * 100))} %`;
+  PS.laufzeit = (sek) => {
+    const h = Math.floor(sek / 3600),
+      m = Math.floor((sek % 3600) / 60),
+      s = sek % 60;
+    return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  };
+  /** Kaufmännisch runden, halber Cent vom Nullpunkt weg (ANNAHME aus DECISIONS, Rundung) */
+  PS.runde = (x) => Math.sign(x) * Math.round(Math.abs(x));
+  PS.esc = (s) =>
+    String(s ?? "").replace(
+      /[&<>"']/g,
+      (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+    );
+  PS.mehrzahl = (n, eins, viele) => `${n} ${n === 1 ? eins : viele}`;
+
+  // ---------- Zustand (nur im Gerät, erfundene Daten; DS-15) ----------
+  const SCHLUESSEL = "perfect-smile-vorschau";
+  PS.lade = () => {
+    try {
+      const roh = localStorage.getItem(SCHLUESSEL);
+      if (roh) {
+        const z = JSON.parse(roh);
+        if (z && z.version === PS.DATENVERSION && z.tag === PS.heute()) return z;
+      }
+    } catch {
+      /* Speicher gesperrt: frische Daten */
+    }
+    return PS.erzeugeDaten(PS.heute());
+  };
+  let speicherUhr = 0;
+  PS.speichere = () => {
+    clearTimeout(speicherUhr);
+    speicherUhr = setTimeout(() => {
+      try {
+        localStorage.setItem(SCHLUESSEL, JSON.stringify(PS.z));
+      } catch {
+        /* egal */
+      }
+    }, 120);
+  };
+  PS.zuruecksetzen = () => {
+    try {
+      localStorage.removeItem(SCHLUESSEL);
+    } catch {
+      /* egal */
+    }
+    const modus = PS.z && PS.z.modus;
+    PS.z = PS.erzeugeDaten(PS.heute());
+    if (modus) PS.z.modus = modus;
+    PS.nav = [];
+    PS.schliesseBlatt(true);
+    PS.render();
+    PS.meldung("Vorschau zurückgesetzt");
+  };
+  PS.id = (vorsilbe) =>
+    `${vorsilbe}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
+  // ---------- Navigation (Ansichten-Stapel, Zurück-Taste von Android und Browser) ----------
+  PS.nav = [];
+  PS.ansicht = () => PS.nav[PS.nav.length - 1] || null;
+  PS.geh = (name, daten = {}) => {
+    PS.nav.push({ name, ...daten });
+    try {
+      history.pushState({ ps: PS.nav.length }, "");
+    } catch {
+      /* egal */
+    }
+    PS.render(true);
+  };
+  PS.ersetze = (name, daten = {}) => {
+    PS.nav = [{ name, ...daten }];
+    PS.render(true);
+  };
+  PS.zurueck = () => {
+    if (PS.blattOffen()) {
+      PS.schliesseBlatt();
+      return true;
+    }
+    if (PS.nav.length > 1) {
+      PS.nav.pop();
+      PS.render(true);
+      return true;
+    }
+    return false;
+  };
+  window.addEventListener("popstate", () => {
+    PS.zurueck();
+  });
+  /** Für die Android-Hülle (APK): true, wenn die App selbst zurückgegangen ist */
+  window.psZurueck = () => PS.zurueck();
+
+  // ---------- Rendern ----------
+  PS.module = {};
+  PS.render = (neueAnsicht) => {
+    const m = PS.module[PS.z.modus] || PS.module.start;
+    const app = document.getElementById("app");
+    const scroller = app.querySelector(".inhalt");
+    const pos = scroller && !neueAnsicht ? scroller.scrollTop : 0;
+    app.innerHTML = m.render();
+    const neu = app.querySelector(".inhalt");
+    if (neu) neu.scrollTop = pos;
+    document.body.classList.toggle("mit-rahmen", m.rahmen === true);
+    if (m.nachRender) m.nachRender();
+    PS.tick();
+    PS.speichere();
+  };
+  PS.wechsleModus = (modus) => {
+    PS.z.modus = modus;
+    PS.nav = [];
+    PS.schliesseBlatt(true);
+    PS.render(true);
+  };
+
+  // Sekundentakt: nur markierte Stellen aktualisieren (Uhr, Timer)
+  PS.tick = () => {
+    const jetzt = Date.now();
+    document.querySelectorAll("[data-seit]").forEach((el) => {
+      const sek = Math.max(0, Math.floor((jetzt - Date.parse(el.dataset.seit)) / 1000));
+      el.textContent = PS.laufzeit(sek);
+    });
+    document.querySelectorAll("[data-uhr]").forEach((el) => {
+      el.textContent = el.dataset.uhr === "sek" ? PS.uhr(new Date()) : PS.zeit(new Date());
+    });
+    const m = PS.module[PS.z && PS.z.modus];
+    if (m && m.tick) m.tick();
+  };
+  setInterval(() => PS.tick(), 1000);
+
+  // ---------- Ereignisse ----------
+  PS.aktionen = {};
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-a]");
+    if (!el || el.disabled) return;
+    const f = PS.aktionen[el.dataset.a];
+    if (!f) return;
+    e.preventDefault();
+    PS.tipp();
+    f(el, e);
+    PS.speichere();
+  });
+  document.addEventListener("submit", (e) => {
+    const form = e.target.closest("form[data-senden]");
+    if (!form) return;
+    e.preventDefault();
+    const f = PS.aktionen[form.dataset.senden];
+    if (f) {
+      PS.tipp();
+      f(form, new FormData(form));
+      PS.speichere();
+    }
+  });
+  document.addEventListener("input", (e) => {
+    const el = e.target.closest("[data-eingabe]");
+    if (!el) return;
+    const f = PS.aktionen[el.dataset.eingabe];
+    if (f) f(el, e);
+  });
+  PS.tipp = () => {
+    try {
+      if (navigator.vibrate) navigator.vibrate(8);
+    } catch {
+      /* egal */
+    }
+  };
+
+  // ---------- Blatt (Dialog von unten) ----------
+  let blattZu = null;
+  PS.blattOffen = () => !document.getElementById("ebene").hidden;
+  PS.blatt = (html, { titel = "", fest = false, klasse = "", beimSchliessen = null } = {}) => {
+    const eb = document.getElementById("ebene");
+    eb.innerHTML = `<div class="blatt-hg" ${fest ? "" : 'data-a="blattZu"'}></div>
+      <div class="blatt ${klasse}" role="dialog" aria-modal="true" aria-label="${PS.esc(titel)}"><div class="blatt-griff"></div>${html}</div>`;
+    eb.hidden = false;
+    blattZu = beimSchliessen;
+    requestAnimationFrame(() => requestAnimationFrame(() => eb.classList.add("offen")));
+    const erstes = eb.querySelector("[autofocus]");
+    if (erstes) setTimeout(() => erstes.focus(), 280);
+  };
+  PS.schliesseBlatt = (sofort) => {
+    const eb = document.getElementById("ebene");
+    if (!eb || eb.hidden) return;
+    eb.classList.remove("offen");
+    const fertig = () => {
+      eb.hidden = true;
+      eb.innerHTML = "";
+    };
+    if (sofort) fertig();
+    else setTimeout(fertig, 240);
+    const f = blattZu;
+    blattZu = null;
+    if (f) f();
+  };
+  PS.aktionen.blattZu = () => PS.schliesseBlatt();
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && PS.blattOffen()) PS.schliesseBlatt();
+  });
+
+  /** Rückfrage im Blatt statt confirm() */
+  PS.frage = ({ titel, text, ja, nein = "Abbrechen", gefahr = false, beiJa }) => {
+    PS._beiJa = beiJa;
+    PS.blatt(
+      `<h2>${PS.esc(titel)}</h2>${text ? `<p class="leise">${text}</p>` : ""}
+      <div class="knoepfe"><button class="knopf gross ${gefahr ? "gefahr" : ""}" data-a="frageJa">${PS.esc(ja)}</button>
+      <button class="knopf gross zweit" data-a="blattZu">${PS.esc(nein)}</button></div>`,
+      { titel },
+    );
+  };
+  PS.aktionen.frageJa = () => {
+    const f = PS._beiJa;
+    PS._beiJa = null;
+    PS.schliesseBlatt();
+    if (f) f();
+  };
+
+  // ---------- Meldungen ----------
+  PS.meldung = (text, art = "ok") => {
+    const box = document.getElementById("meldungen");
+    const el = document.createElement("div");
+    el.className = "meldung";
+    el.setAttribute("role", "status");
+    el.innerHTML = `${PS.icon(art === "warn" ? "warn" : art === "info" ? "info" : "check")}<span>${PS.esc(text)}</span>`;
+    box.appendChild(el);
+    setTimeout(() => {
+      el.classList.add("weg");
+      setTimeout(() => el.remove(), 260);
+    }, 3200);
+  };
+
+  // ---------- Symbole (eigene, schlichte Linien-Icons) ----------
+  const P = {
+    zahn: '<path d="M7.5 3.5c-2.2 0-3.9 1.8-3.9 4.4 0 2.3.9 3.6 1.5 5.4.7 2.1.9 7.2 2.6 7.2 1.6 0 1.6-4.9 2.4-6.2.4-.7.8-1 1.4-1h1c.6 0 1 .3 1.4 1 .8 1.3.8 6.2 2.4 6.2 1.7 0 1.9-5.1 2.6-7.2.6-1.8 1.5-3.1 1.5-5.4 0-2.6-1.7-4.4-3.9-4.4-1.8 0-2.6 1-4.5 1s-2.7-1-4.5-1z"/>',
+    start:
+      '<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/>',
+    liste:
+      '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+    rechnung: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+    chart: '<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
+    mehr: '<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>',
+    auto: '<path d="M3 16.5V12l2-5h10.5l3.5 5h2v4.5"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6M5 12h14"/>',
+    kalender:
+      '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    person: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-4 4.3-6 8-6s6.8 2 8 6"/>',
+    glocke: '<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+    pfeil: '<path d="m9 5 7 7-7 7"/>',
+    zurueck: '<path d="m15 5-7 7 7 7"/>',
+    check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+    kreischeck: '<circle cx="12" cy="12" r="9"/><path d="m7.8 12.3 2.9 2.9 5.5-5.7"/>',
+    warn: '<path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.2v.3"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.3"/>',
+    telefon:
+      '<path d="M5 3.5h3.5l1.8 4.6-2.3 1.5a11 11 0 0 0 6.4 6.4l1.5-2.3 4.6 1.8V19a2 2 0 0 1-2 2A16.5 16.5 0 0 1 3 5.5a2 2 0 0 1 2-2z"/>',
+    hoch: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+    runter: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+    play: '<path d="M8 5.5v13l11-6.5z"/>',
+    stop: '<rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    uhr: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/>',
+    qr: '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h2.5v2.5H14zM17.5 17.5H20V20h-2.5zM14 18.5V20M18.5 14H20"/>',
+    suche: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
+    wlan: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.3a9.5 9.5 0 0 1 13 0M8.6 15.6a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1.2"/>',
+    wlanAus:
+      '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.3a9.5 9.5 0 0 1 13 0M8.6 15.6a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1.2"/><path d="M3 3l18 18"/>',
+    abmelden:
+      '<path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"/><path d="M10 16.5 5.5 12 10 7.5M5.5 12H15"/>',
+    sende: '<path d="M4 12 20 4l-4 16-4.5-6.5z"/><path d="M11.5 13.5 20 4"/>',
+    material:
+      '<path d="M12 3 3.5 7.5v9L12 21l8.5-4.5v-9z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/>',
+    stift: '<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+    schloss:
+      '<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+    handy: '<rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/>',
+    tablet: '<rect x="4" y="2.5" width="16" height="19" rx="2.2"/><path d="M11 18.5h2"/>',
+    bildschirm:
+      '<rect x="2.5" y="4" width="19" height="12.5" rx="1.8"/><path d="M8.5 20h7M12 16.5V20"/>',
+    vollbild: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+    teilen:
+      '<path d="M12 15V3.5M8 7.5l4-4 4 4"/><path d="M6 11H5a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 5 20h14a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 19 11h-1"/>',
+    neu: '<path d="M12 4v16M4 12h16"/>',
+    vorfuehren: '<path d="M4 5h16v10H4z"/><path d="M9 19h6M12 15v4"/><path d="m10.5 8 4 2-4 2z"/>',
+    notiz: '<path d="M5 4h14v11l-5 5H5z"/><path d="M14 20v-5h5"/>',
+  };
+  PS.icon = (name) =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[name] || ""}</svg>`;
+  PS.logoZeichen = () =>
+    `<span class="logo-zeichen"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${P.zahn}</svg></span>`;
+
+  // ---------- Fachliches: Status, Ampel, Statuswechsel nach Kapitel 5 ----------
+  PS.STATUS = {
+    angenommen: "Angenommen",
+    zugewiesen: "Zugewiesen",
+    in_fertigung: "In Fertigung",
+    qualitaetskontrolle: "Qualitätskontrolle",
+    versandbereit: "Versandbereit",
+    ausgeliefert: "Ausgeliefert",
+    abgerechnet: "Abgerechnet",
+    rueckfrage: "Rückfrage",
+    storniert: "Storniert",
+  };
+  PS.OFFEN = [
+    "angenommen",
+    "zugewiesen",
+    "in_fertigung",
+    "qualitaetskontrolle",
+    "versandbereit",
+    "rueckfrage",
+  ];
+  PS.statusPille = (s) => `<span class="pille st-${s}">${PS.STATUS[s]}</span>`;
+  PS.ampel = (a) => {
+    if (!PS.OFFEN.includes(a.status)) return "";
+    const h = PS.heute();
+    if (a.termin < h) return "rot";
+    if (a.termin === h) return "gelb";
+    return "";
+  };
+  PS.terminText = (a) => {
+    const amp = PS.ampel(a);
+    const t = PS.datum(a.termin);
+    if (amp === "rot") return `<span class="ampel rot">${t} · überfällig</span>`;
+    if (amp === "gelb") return `<span class="ampel gelb">Heute</span>`;
+    return `<span class="ampel">${t}</span>`;
+  };
+  /** Zulässige Statuswechsel (Tabelle in Kapitel 5); rolle: inhaber | verwaltung | annahme | techniker | fahrer */
+  PS.wechselFuer = (a, rolle, eigener) => {
+    const r = [];
+    const s = a.status;
+    const darf = (liste) => liste.includes(rolle) || (eigener && liste.includes("techniker_eigen"));
+    if (s === "angenommen" && darf(["annahme", "verwaltung", "inhaber"]))
+      r.push({ nach: "zugewiesen", text: "Techniker zuweisen", wahl: "techniker" });
+    if (s === "zugewiesen" && darf(["techniker_eigen", "verwaltung"]))
+      r.push({ nach: "in_fertigung", text: "Fertigung beginnen" });
+    if (s === "in_fertigung" && darf(["techniker_eigen", "verwaltung"]))
+      r.push({
+        nach: "qualitaetskontrolle",
+        text: "Fertigung abgeschlossen",
+        bedingung: "erfassung",
+      });
+    if (s === "qualitaetskontrolle" && darf(["inhaber", "verwaltung"])) {
+      r.push({ nach: "versandbereit", text: "QK bestanden · versandbereit" });
+      r.push({
+        nach: "in_fertigung",
+        text: "Mangel · zurück in Fertigung",
+        notiz: "Welcher Mangel? (Pflicht)",
+        gefahr: true,
+      });
+    }
+    if (s === "versandbereit" && darf(["fahrer", "verwaltung", "annahme"]))
+      r.push({ nach: "ausgeliefert", text: "Als ausgeliefert melden" });
+    if (
+      ["angenommen", "zugewiesen", "in_fertigung", "qualitaetskontrolle", "versandbereit"].includes(
+        s,
+      ) &&
+      darf(["annahme", "verwaltung", "techniker_eigen"])
+    )
+      r.push({
+        nach: "rueckfrage",
+        text: "Rückfrage an die Praxis",
+        notiz: "Was ist unklar? (Pflicht)",
+        gefahr: false,
+        zweit: true,
+      });
+    if (s === "rueckfrage" && darf(["annahme", "verwaltung"]))
+      r.push({
+        nach: a.statusVorRueckfrage,
+        text: "Rückfrage beantwortet",
+        notiz: "Antwort der Praxis (Pflicht)",
+      });
+    if (
+      ["angenommen", "zugewiesen", "in_fertigung", "rueckfrage"].includes(s) &&
+      darf(["verwaltung", "inhaber"])
+    )
+      r.push({
+        nach: "storniert",
+        text: "Auftrag stornieren",
+        notiz: "Begründung (Pflicht)",
+        gefahr: true,
+        zweit: true,
+      });
+    return r;
+  };
+  PS.setzeStatus = (a, nach, wer, notiz) => {
+    if (nach === "rueckfrage") a.statusVorRueckfrage = a.status;
+    a.status = nach;
+    a.verlauf.push({ status: nach, zeit: new Date().toISOString(), wer, notiz: notiz || "" });
+    if (notiz) a.notizen.push({ text: notiz, zeit: new Date().toISOString(), wer });
+  };
+
+  PS.mitarbeiter = (k) => PS.z.mitarbeiter[k] || { name: k, kuerzel: k };
+  PS.praxis = (id) => PS.z.praxen[id];
+  PS.auftrag = (id) => PS.z.auftraege.find((a) => a.id === id);
+  PS.leistung = (nr) => PS.z.katalog[nr];
+  /** Preis aus der gültigen Preisliste des Kunden (STA-09 vor Standardpreis; LST-07) */
+  PS.preisFuer = (praxisId, nr) => {
+    const p = PS.praxis(praxisId);
+    return (p.preise && p.preise[nr]) ?? PS.leistung(nr).preis;
+  };
+
+  // ---------- Rechnungssummen (RE-01): Netto je Zeile, Steuer je Satz auf die Summe, kaufmännisch gerundet ----------
+  PS.summen = (r) => {
+    const saetze = {};
+    let netto = 0;
+    for (const p of r.positionen) {
+      const n = p.menge * p.preis;
+      netto += n;
+      saetze[p.steuer] = (saetze[p.steuer] || 0) + n;
+    }
+    const steuern = Object.keys(saetze)
+      .map(Number)
+      .sort((a, b) => a - b)
+      .map((s) => ({ satz: s, netto: saetze[s], steuer: PS.runde((saetze[s] * s) / 100) }));
+    const steuer = steuern.reduce((x, s) => x + s.steuer, 0);
+    return { netto, steuern, steuer, brutto: netto + steuer };
+  };
+  PS.zahlungsstatus = (r) => {
+    if (r.status !== "freigegeben") return "entwurf";
+    const { brutto } = PS.summen(r);
+    if (r.bezahlt >= brutto) return "bezahlt";
+    if (r.faellig < PS.heute()) return "ueberfaellig";
+    if (r.bezahlt > 0) return "teilweise";
+    return "offen";
+  };
+  PS.ZAHLUNG = {
+    entwurf: "Entwurf",
+    offen: "Offen",
+    teilweise: "Teilweise bezahlt",
+    bezahlt: "Bezahlt",
+    ueberfaellig: "Überfällig",
+  };
+  PS.nummer = (vorsilbe, n) => `${vorsilbe}${PS.heute().slice(0, 4)}-${String(n).padStart(5, "0")}`;
+
+  // ---------- Vollbild und Bildschirm wach halten (Display) ----------
+  PS.vollbild = async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {
+      PS.meldung("Vollbild geht hier nicht. Im Browser: Menü → Vollbild.", "info");
+    }
+  };
+  let sperre = null;
+  PS.wachHalten = async () => {
+    try {
+      if ("wakeLock" in navigator && !sperre) {
+        sperre = await navigator.wakeLock.request("screen");
+        sperre.addEventListener("release", () => {
+          sperre = null;
+        });
+      }
+    } catch {
+      /* egal */
+    }
+  };
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && PS.z && PS.z.modus === "display") PS.wachHalten();
+  });
+
+  // ---------- Vorführ-Menü (gilt für alle Geräte) ----------
+  PS.vorfuehrMenue = (extra = "") => {
+    PS.blatt(
+      `<h2>Vorführen</h2>
+      <p class="leise">Werkzeuge für die Präsentation. Alle Daten sind erfunden und bleiben nur auf diesem Gerät.</p>
+      ${extra}
+      <div class="abschnitt"><h2>Andere Vorschau öffnen</h2>
+        <div class="liste">
+          <button class="eintrag" data-a="modus" data-m="handy">${PS.icon("handy")}<span class="wachse fett">Handy · Fahrer und Inhaber</span>${PS.icon("pfeil")}</button>
+          <button class="eintrag" data-a="modus" data-m="ipad">${PS.icon("tablet")}<span class="wachse fett">iPad · Techniker</span>${PS.icon("pfeil")}</button>
+          <button class="eintrag" data-a="modus" data-m="display">${PS.icon("bildschirm")}<span class="wachse fett">Labor-Display</span>${PS.icon("pfeil")}</button>
+          <button class="eintrag" data-a="modus" data-m="start">${PS.icon("start")}<span class="wachse fett">Übersicht aller Vorschauen</span>${PS.icon("pfeil")}</button>
+        </div></div>
+      <div class="knoepfe"><button class="knopf zweit gross" data-a="zuruecksetzen">Vorschau zurücksetzen</button></div>`,
+      { titel: "Vorführen" },
+    );
+  };
+  PS.aktionen.vorfuehren = () => {
+    const m = PS.module[PS.z.modus];
+    PS.vorfuehrMenue(m && m.vorfuehrExtra ? m.vorfuehrExtra() : "");
+  };
+  PS.aktionen.modus = (el) => PS.wechsleModus(el.dataset.m);
+  PS.aktionen.zuruecksetzen = () =>
+    PS.frage({
+      titel: "Vorschau zurücksetzen?",
+      text: "Alle Eingaben dieser Vorführung gehen verloren. Die erfundenen Startdaten kommen zurück.",
+      ja: "Zurücksetzen",
+      gefahr: true,
+      beiJa: () => PS.zuruecksetzen(),
+    });
+
+  // ---------- Installation als App (PWA) ----------
+  PS.installEreignis = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    PS.installEreignis = e;
+  });
+  PS.istInstalliert = () =>
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true ||
+    /PerfectSmileApp/.test(navigator.userAgent);
+  PS.aktionen.installieren = async () => {
+    if (PS.installEreignis) {
+      PS.installEreignis.prompt();
+      try {
+        await PS.installEreignis.userChoice;
+      } catch {
+        /* egal */
+      }
+      PS.installEreignis = null;
+      return;
+    }
+    PS.blatt(
+      `<h2>Auf den Home-Bildschirm</h2>
+      <div class="abstand-8"><p class="fett">iPhone und iPad (Safari)</p><p>Unten bzw. oben auf ${PS.icon("teilen").replace("<svg", '<svg style="width:20px;height:20px;vertical-align:-4px"')} <b>Teilen</b> tippen, dann <b>„Zum Home-Bildschirm“</b>.</p></div>
+      <div class="abstand-8"><p class="fett">Android (Chrome)</p><p>Oben rechts auf <b>⋮</b> tippen, dann <b>„App installieren“</b> oder <b>„Zum Startbildschirm hinzufügen“</b>.</p></div>
+      <p class="leise">Danach startet die Vorschau mit eigenem Symbol und ohne Browserleiste, genau wie später die echte Web-App.</p>
+      <div class="knoepfe"><button class="knopf gross" data-a="blattZu">Verstanden</button></div>`,
+      { titel: "Installieren" },
+    );
+  };
+
+  // ---------- Start ----------
+  PS.starte = (modus) => {
+    PS.z = PS.lade();
+    // Eine Gerätedatei startet immer in ihrer Ansicht; die Gesamtdatei dort, wo zuletzt gezeigt wurde
+    if (modus) PS.z.modus = modus;
+    if (!PS.z.modus) PS.z.modus = "start";
+    PS.render(true);
+    if (PS.z.modus === "display") PS.wachHalten();
+    if ("serviceWorker" in navigator && location.protocol === "https:" && PS.MIT_SW) {
+      navigator.serviceWorker.register("sw.js").catch(() => {
+        /* ohne Offline-Speicher weiter */
+      });
+    }
+  };
+})();
+
+/* Perfect Smile · Vorschau – erfundene Daten (DS-15). Namen, Leistungen und Preise folgen dem Seed der echten
+   Anwendung (src/server/seed); Termine liegen relativ zum heutigen Tag, damit die Vorschau an jedem Tag stimmt.
+   Telefonnummern stammen aus dem Block, den die Bundesnetzagentur für Film und Fernsehen freihält (030 23125 …). */
+(function () {
+  "use strict";
+  const PS = window.PS;
+  PS.DATENVERSION = 4;
+
+  // Leistungskatalog (STA-08): Nummer, Bezeichnung, Einheit, Standardpreis in Cent, Steuersatz
+  // ANNAHME (wie D-034 ff.): zahntechnische Leistungen 7 %, Versandpauschale 19 % – bestätigt der Steuerberater.
+  const KATALOG = [
+    ["T-0010", "Modell aus Superhartgips", "Stück", 1450, 7],
+    ["T-0020", "Sägeschnittmodell", "Stück", 2380, 7],
+    ["T-0030", "Einzelstumpf vorbereiten", "Stück", 890, 7],
+    ["T-0100", "Vollkeramikkrone Zirkon", "Stück", 18900, 7],
+    ["T-0110", "Verblendkrone Metallkeramik", "Stück", 21500, 7],
+    ["T-0120", "Teleskopkrone Primärteil", "Stück", 16400, 7],
+    ["T-0200", "Brückenglied Zirkon", "Glied", 15200, 7],
+    ["T-0300", "Keramikinlay", "Stück", 13800, 7],
+    ["T-0400", "Modellgussbasis", "Stück", 28700, 7],
+    ["T-0410", "Klammer gegossen", "Stück", 3100, 7],
+    ["T-0500", "Kunststoffbasis Totalprothese", "Kiefer", 31200, 7],
+    ["T-0510", "Konfektionszahn Front", "Stück", 690, 7],
+    ["T-0520", "Konfektionszahn Seite", "Stück", 740, 7],
+    ["T-0600", "Implantatkrone verschraubt", "Stück", 26900, 7],
+    ["T-0610", "Individuelles Abutment", "Stück", 19800, 7],
+    ["T-0700", "Aufbissschiene tiefgezogen", "Stück", 9800, 7],
+    ["T-0800", "Unterfütterung", "Kiefer", 7600, 7],
+    ["T-0810", "Reparatur Bruch", "Stück", 4300, 7],
+    ["T-0900", "Farbbestimmung im Labor", "Termin", 3500, 7],
+    ["T-0910", "Versandpauschale", "Sendung", 850, 19],
+  ];
+
+  const MATERIAL = [
+    { id: "m1", name: "Zirkonoxid-Ronde 98 mm", hersteller: "Beispiel Dental" },
+    { id: "m2", name: "Verblendkeramik Dentin A2", hersteller: "Muster Keramik" },
+    { id: "m3", name: "Superhartgips Klasse 4", hersteller: "Testgips" },
+    { id: "m4", name: "Modellguss-Legierung CoCr", hersteller: "Beispiel Metall" },
+    { id: "m5", name: "Tiefziehfolie 1,5 mm", hersteller: "Folien Muster" },
+  ];
+
+  const PRAXEN = {
+    p1: {
+      name: "Zahnarztpraxis Dr. Testmann",
+      kurz: "Dr. Testmann",
+      strasse: "Beispielweg 1",
+      plz: "10115",
+      ort: "Berlin",
+      tel: "030 23125 101",
+      behandler: ["Dr. Theo Testmann", "Dr. Tina Testmann"],
+      preise: { "T-0100": 18200 },
+      nummer: "K-00001",
+    },
+    p2: {
+      name: "Gemeinschaftspraxis Musterhof",
+      kurz: "Musterhof",
+      strasse: "Musterallee 22",
+      plz: "10405",
+      ort: "Berlin",
+      tel: "030 23125 102",
+      behandler: ["Dr. Mia Musterhof"],
+      preise: {},
+      nummer: "K-00002",
+    },
+    p3: {
+      name: "Zahnzentrum Erfundenstadt",
+      kurz: "Erfundenstadt",
+      strasse: "Am Testpark 5",
+      plz: "14467",
+      ort: "Potsdam",
+      tel: "030 23125 103",
+      behandler: ["Dr. Emil Erfunden", "Dr. Eva Erfunden"],
+      preise: {},
+      nummer: "K-00003",
+    },
+    p4: {
+      name: "Praxisklinik Beispielhafen",
+      kurz: "Beispielhafen",
+      strasse: "Beispielhafen 3",
+      plz: "10557",
+      ort: "Berlin",
+      tel: "030 23125 104",
+      behandler: ["Dr. Ben Beispiel"],
+      preise: { "T-0700": 9200 },
+      nummer: "K-00004",
+    },
+    p5: {
+      name: "Zahnarztpraxis Dr. Ohnename",
+      kurz: "Dr. Ohnename",
+      strasse: "Fantasiestraße 9",
+      plz: "12043",
+      ort: "Berlin",
+      tel: "030 23125 105",
+      behandler: ["Dr. Olga Ohnename"],
+      preise: {},
+      nummer: "K-00005",
+    },
+  };
+
+  const MITARBEITER = {
+    IT: { name: "Ines Testinhaber", vorname: "Ines", rollen: ["inhaber"], std: 40 },
+    VT: { name: "Vera Testverwaltung", vorname: "Vera", rollen: ["verwaltung"], std: 38 },
+    AT: { name: "Anton Testannahme", vorname: "Anton", rollen: ["annahme"], std: 30 },
+    TT: { name: "Tom Testtechnik", vorname: "Tom", rollen: ["techniker"], std: 40 },
+    TA: { name: "Tara Testtechnik", vorname: "Tara", rollen: ["techniker"], std: 40 },
+    TI: { name: "Timo Testtechnik", vorname: "Timo", rollen: ["techniker"], std: 32 },
+    TL: { name: "Tilda Testtechnik", vorname: "Tilda", rollen: ["techniker"], std: 40 },
+    TH: {
+      name: "Theo Testtechnik",
+      vorname: "Theo",
+      rollen: ["techniker"],
+      std: 20,
+      abwesend: "Urlaub",
+    },
+    FT: { name: "Fritz Testfahrer", vorname: "Fritz", rollen: ["fahrer"], std: 30 },
+    FR: { name: "Frida Testfahrer", vorname: "Frida", rollen: ["fahrer"], std: 20 },
+  };
+
+  PS.erzeugeDaten = (heute) => {
+    const T = (n) => (n === 0 ? heute : PS.plusArbeitstage(heute, n));
+    const vor = (min) => new Date(Date.now() - min * 60000).toISOString();
+    const am = (tag, hh, mm) =>
+      new Date(
+        `${tag}T${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:00`,
+      ).toISOString();
+    const jahr = heute.slice(0, 4);
+    const katalog = {};
+    for (const [nr, b, e, p, st] of KATALOG)
+      katalog[nr] = { nr, bezeichnung: b, einheit: e, preis: p, steuer: st };
+    const mitarbeiter = {};
+    for (const k of Object.keys(MITARBEITER)) mitarbeiter[k] = { kuerzel: k, ...MITARBEITER[k] };
+
+    let posNr = 0;
+    const auftraege = [];
+    /** n: laufende Nummer; pos: [Leistungsnummer, Menge, Zähne (FDI), Farbe] */
+    function A(n, praxis, arbeitsart, patient, terminOffset, status, techniker, pos, extra = {}) {
+      const termin = T(terminOffset);
+      const eingang = PS.plusArbeitstage(termin, -7);
+      const a = {
+        id: `a${n}`,
+        nr: `${jahr}-${String(n).padStart(5, "0")}`,
+        praxis,
+        behandler: PRAXEN[praxis].behandler[0],
+        patient,
+        arbeitsart,
+        eingang,
+        termin,
+        status,
+        techniker,
+        statusVorRueckfrage: null,
+        berechenbar: true,
+        positionen: pos.map(([nr, menge, zaehne, farbe]) => ({
+          id: `p${++posNr}`,
+          nr,
+          menge,
+          zaehne: zaehne || [],
+          farbe: farbe || "",
+        })),
+        verlauf: [{ status: "angenommen", zeit: am(eingang, 8, 40), wer: "AT", notiz: "" }],
+        notizen: [],
+        ...extra,
+      };
+      const weg = [
+        "zugewiesen",
+        "in_fertigung",
+        "qualitaetskontrolle",
+        "versandbereit",
+        "ausgeliefert",
+        "abgerechnet",
+      ];
+      const ziel =
+        status === "rueckfrage" || status === "storniert" ? extra.vorher || "zugewiesen" : status;
+      const bis = weg.indexOf(ziel);
+      for (let i = 0; i <= bis; i++) {
+        const tag = PS.plusArbeitstage(eingang, Math.min(i + 1, 6));
+        const t = tag >= heute ? vor(200 - i * 30) : am(tag, 9 + i, 15);
+        const wer = ["VT", techniker || "VT", techniker || "VT", "IT", "FT", "IT"][i];
+        a.verlauf.push({ status: weg[i], zeit: t, wer, notiz: "" });
+      }
+      if (status === "rueckfrage") {
+        a.statusVorRueckfrage = ziel;
+        a.verlauf.push({
+          status: "rueckfrage",
+          zeit: vor(95),
+          wer: techniker || "AT",
+          notiz: extra.rueckfrageNotiz,
+        });
+        a.notizen.push({ text: extra.rueckfrageNotiz, zeit: vor(95), wer: techniker || "AT" });
+      }
+      if (status === "storniert") {
+        a.verlauf.push({ status: "storniert", zeit: vor(60 * 26), wer: "VT", notiz: extra.grund });
+        a.notizen.push({ text: extra.grund, zeit: vor(60 * 26), wer: "VT" });
+      }
+      delete a.vorher;
+      delete a.rueckfrageNotiz;
+      delete a.grund;
+      auftraege.push(a);
+      return a;
+    }
+
+    // Aufträge von Tom (TT) – erscheinen am iPad
+    const a388 = A(388, "p1", "Krone", "TP01", -1, "in_fertigung", "TT", [
+      ["T-0100", 1, [16], "A2"],
+      ["T-0010", 1],
+    ]);
+    const a402 = A(402, "p2", "Brücke", "TP02", 0, "in_fertigung", "TT", [
+      ["T-0100", 2, [34, 36], "A3"],
+      ["T-0200", 1, [35], "A3"],
+      ["T-0020", 1],
+    ]);
+    A(406, "p3", "Implantatkrone", "TP03", 1, "zugewiesen", "TT", [
+      ["T-0600", 1, [46], "A2"],
+      ["T-0610", 1, [46]],
+    ]);
+    A(409, "p4", "Aufbissschiene", "TP04", 2, "zugewiesen", "TT", [
+      ["T-0700", 1],
+      ["T-0010", 2],
+    ]);
+    A(395, "p1", "Inlay", "TP05", 3, "rueckfrage", "TT", [["T-0300", 1, [26], "A1"]], {
+      vorher: "zugewiesen",
+      rueckfrageNotiz: "Farbe unklar – Praxis ruft zurück",
+    });
+    // Übrige Aufträge im Labor
+    A(384, "p2", "Totalprothese", "TP06", -2, "qualitaetskontrolle", "TA", [
+      ["T-0500", 1],
+      ["T-0510", 6],
+      ["T-0520", 8],
+    ]);
+    A(390, "p3", "Krone", "TP07", 0, "versandbereit", "TI", [
+      ["T-0110", 1, [21], "A2"],
+      ["T-0910", 1],
+    ]);
+    A(391, "p1", "Brücke", "TP08", 0, "versandbereit", "TL", [
+      ["T-0100", 2, [44, 46], "A3"],
+      ["T-0200", 1, [45], "A3"],
+    ]);
+    A(397, "p4", "Inlay", "TP09", 1, "in_fertigung", "TA", [["T-0300", 2, [36, 37], "A2"]]);
+    A(399, "p5", "Krone", "TP10", 1, "zugewiesen", "TI", [["T-0100", 1, [11], "B2"]]);
+    A(400, "p2", "Implantatkrone", "TP11", 2, "in_fertigung", "TL", [
+      ["T-0600", 1, [24], "A3"],
+      ["T-0610", 1, [24]],
+    ]);
+    A(403, "p3", "Teilprothese", "TP12", 3, "angenommen", null, [
+      ["T-0400", 1],
+      ["T-0410", 2],
+      ["T-0520", 3],
+    ]);
+    A(404, "p1", "Aufbissschiene", "TP13", 4, "angenommen", null, [["T-0700", 1]]);
+    A(393, "p4", "Krone", "TP14", 2, "rueckfrage", "TA", [["T-0100", 1, [15], "A2"]], {
+      vorher: "in_fertigung",
+      rueckfrageNotiz: "Präparationsgrenze im Scan nicht eindeutig",
+    });
+    A(398, "p5", "Unterfütterung", "TP15", 4, "zugewiesen", "TL", [["T-0800", 1]]);
+    A(401, "p2", "Reparatur", "TP16", 0, "qualitaetskontrolle", "TI", [["T-0810", 1]]);
+    // Ausgeliefert, noch nicht abgerechnet (Grundlage der Rechnungsentwürfe)
+    const a380 = A(380, "p1", "Krone", "TP17", -4, "ausgeliefert", "TT", [
+      ["T-0100", 1, [26], "A2"],
+      ["T-0010", 1],
+    ]);
+    const a381 = A(381, "p1", "Brücke", "TP18", -3, "ausgeliefert", "TA", [
+      ["T-0100", 2, [13, 15], "A2"],
+      ["T-0200", 1, [14], "A2"],
+      ["T-0020", 1],
+    ]);
+    const a382 = A(382, "p2", "Inlay", "TP19", -2, "ausgeliefert", "TL", [
+      ["T-0300", 1, [47], "A3"],
+    ]);
+    A(386, "p5", "Krone", "TP20", 2, "storniert", null, [["T-0100", 1, [22], "A1"]], {
+      vorher: "angenommen",
+      grund: "Von der Praxis abgesagt",
+    });
+
+    // Leistungserfassung (LST-05 bis LST-07); gestern = gesperrt für den Techniker (LST-10)
+    const erfassungen = [];
+    let eNr = 0;
+    function E(a, posIdx, art, werte, von, tag, zeit) {
+      const p = a.positionen[posIdx];
+      const e = {
+        id: `e${++eNr}`,
+        auftrag: a.id,
+        position: p.id,
+        art,
+        von,
+        tag,
+        zeit,
+        nachtraeglich: false,
+        gesendet: true,
+        pruefen: false,
+        abgerechnet: false,
+        ...werte,
+      };
+      if (art === "leistung") {
+        const nr = werte.nr || p.nr;
+        e.nr = nr;
+        e.preis = PS_preis(a.praxis, nr, katalog);
+        e.steuer = katalog[nr].steuer;
+      }
+      erfassungen.push(e);
+      return e;
+    }
+    function PS_preis(praxis, nr, kat) {
+      return (PRAXEN[praxis].preise && PRAXEN[praxis].preise[nr]) ?? kat[nr].preis;
+    }
+    const gestern = T(-1);
+    E(a388, 0, "zeit", { minuten: 80 }, "TT", gestern, am(gestern, 14, 10));
+    E(a388, 1, "leistung", { menge: 1 }, "TT", gestern, am(gestern, 15, 35));
+    E(
+      a388,
+      0,
+      "zeit",
+      { minuten: 650 },
+      "TT",
+      PS.plusArbeitstage(heute, -2),
+      am(PS.plusArbeitstage(heute, -2), 7, 5),
+    ).pruefen = true;
+    E(a402, 2, "leistung", { menge: 1 }, "TT", heute, vor(150));
+    E(a402, 0, "zeit", { minuten: 45 }, "TT", heute, vor(110));
+    for (const a of [a380, a381, a382]) {
+      a.positionen.forEach((p, i) =>
+        E(
+          a,
+          i,
+          "leistung",
+          { menge: p.menge },
+          a.techniker,
+          PS.plusArbeitstage(a.termin, -1),
+          am(PS.plusArbeitstage(a.termin, -1), 11, 0),
+        ),
+      );
+    }
+
+    // Touren (KAL-07, KAL-08)
+    const touren = [
+      {
+        id: "t1",
+        tag: heute,
+        fahrer: "FT",
+        fahrzeug: "B-PS 101",
+        kmStart: null,
+        kmEnde: null,
+        abgeschlossenAm: null,
+        stopps: [
+          {
+            id: "s1",
+            art: "lieferung",
+            praxis: "p1",
+            auftraege: ["a391"],
+            notiz: "Bitte an der Anmeldung abgeben",
+          },
+          {
+            id: "s2",
+            art: "abholung",
+            praxis: "p2",
+            auftraege: [],
+            notiz: "Abdruck und Rezept liegen an der Anmeldung bereit",
+          },
+          {
+            id: "s3",
+            art: "abholung",
+            praxis: "p4",
+            auftraege: [],
+            notiz: "Hintereingang, klingeln bei Labor-Annahme",
+          },
+          { id: "s4", art: "lieferung", praxis: "p3", auftraege: ["a390"], notiz: "" },
+        ],
+      },
+      {
+        id: "t2",
+        tag: heute,
+        fahrer: "FR",
+        fahrzeug: "B-PS 102",
+        kmStart: null,
+        kmEnde: null,
+        abgeschlossenAm: null,
+        stopps: [{ id: "s5", art: "abholung", praxis: "p5", auftraege: [], notiz: "" }],
+      },
+      {
+        id: "t3",
+        tag: T(1),
+        fahrer: "FT",
+        fahrzeug: "B-PS 101",
+        stopps: [
+          { id: "s6", art: "abholung", praxis: "p1", auftraege: [], notiz: "" },
+          { id: "s7", art: "lieferung", praxis: "p4", auftraege: ["a397"], notiz: "" },
+          { id: "s8", art: "lieferung", praxis: "p5", auftraege: ["a399"], notiz: "" },
+        ],
+      },
+      {
+        id: "t4",
+        tag: T(2),
+        fahrer: "FT",
+        fahrzeug: "B-PS 101",
+        stopps: [
+          { id: "s9", art: "lieferung", praxis: "p2", auftraege: ["a400"], notiz: "" },
+          { id: "s10", art: "lieferung", praxis: "p4", auftraege: ["a409"], notiz: "" },
+        ],
+      },
+      {
+        id: "t5",
+        tag: T(3),
+        fahrer: "FT",
+        fahrzeug: "B-PS 101",
+        stopps: [{ id: "s11", art: "abholung", praxis: "p3", auftraege: [], notiz: "" }],
+      },
+      {
+        id: "t6",
+        tag: T(4),
+        fahrer: "FT",
+        fahrzeug: "B-PS 101",
+        stopps: [
+          { id: "s12", art: "lieferung", praxis: "p1", auftraege: ["a404"], notiz: "" },
+          { id: "s13", art: "lieferung", praxis: "p5", auftraege: ["a398"], notiz: "" },
+        ],
+      },
+    ];
+    for (const t of touren)
+      for (const s of t.stopps) {
+        s.bestaetigtAm = null;
+        s.bestaetigtVon = null;
+      }
+
+    // Rechnungen (RE-01 bis RE-10). Entwürfe ohne Nummer; Nummer erst bei Freigabe (RE-05)
+    function positionenAus(as) {
+      const r = [];
+      for (const a of as)
+        for (const e of erfassungen.filter((x) => x.auftrag === a.id && x.art === "leistung")) {
+          r.push({
+            id: `rp${r.length + 1}${a.id}`,
+            auftrag: a.nr,
+            nr: e.nr,
+            text: katalog[e.nr].bezeichnung,
+            menge: e.menge,
+            preis: e.preis,
+            steuer: e.steuer,
+            herkunft: "erfasst",
+          });
+        }
+      return r;
+    }
+    const rechnungen = [
+      {
+        id: "r1",
+        status: "entwurf",
+        nummer: null,
+        praxis: "p1",
+        art: "Sammelrechnung",
+        auftraege: ["a380", "a381"],
+        zeitraum: `${PS.datum(PS.plusTage(heute, -(Number(heute.slice(8, 10)) - 1)))} – ${PS.datum(heute)}`,
+        positionen: [
+          ...positionenAus([a380, a381]),
+          {
+            id: "rpm1",
+            auftrag: "",
+            nr: "T-0910",
+            text: "Versandpauschale",
+            menge: 2,
+            preis: 850,
+            steuer: 19,
+            herkunft: "manuell",
+          },
+        ],
+        bezahlt: 0,
+        gesendet: null,
+      },
+      {
+        id: "r2",
+        status: "entwurf",
+        nummer: null,
+        praxis: "p2",
+        art: "Einzelrechnung",
+        auftraege: ["a382"],
+        zeitraum: PS.datum(a382.termin),
+        positionen: positionenAus([a382]),
+        bezahlt: 0,
+        gesendet: null,
+      },
+    ];
+    const alt = [
+      [
+        87,
+        "p3",
+        -24,
+        30,
+        [
+          ["T-0110", 2],
+          ["T-0010", 2],
+          ["T-0910", 1],
+        ],
+        "voll",
+      ],
+      [
+        88,
+        "p2",
+        -16,
+        30,
+        [
+          ["T-0600", 1],
+          ["T-0610", 1],
+        ],
+        0,
+      ],
+      [
+        89,
+        "p4",
+        -44,
+        30,
+        [
+          ["T-0300", 2],
+          ["T-0010", 1],
+        ],
+        0,
+      ],
+      [
+        90,
+        "p1",
+        -12,
+        30,
+        [
+          ["T-0100", 3],
+          ["T-0200", 1],
+          ["T-0020", 1],
+        ],
+        40000,
+      ],
+      [
+        91,
+        "p5",
+        -6,
+        30,
+        [
+          ["T-0800", 1],
+          ["T-0810", 1],
+        ],
+        0,
+      ],
+    ];
+    for (const [n, praxis, tage, ziel, pos, bez] of alt) {
+      const datum = PS.plusTage(heute, tage);
+      const r = {
+        id: `r${n}`,
+        status: "freigegeben",
+        nummer: `R-${jahr}-${String(n).padStart(5, "0")}`,
+        praxis,
+        art: "Einzelrechnung",
+        auftraege: [],
+        zeitraum: PS.datum(datum),
+        positionen: pos.map(([nr, menge], i) => ({
+          id: `rp${n}-${i}`,
+          auftrag: "",
+          nr,
+          text: katalog[nr].bezeichnung,
+          menge,
+          preis: PS_preis(praxis, nr, katalog),
+          steuer: katalog[nr].steuer,
+          herkunft: "erfasst",
+        })),
+        datum,
+        faellig: PS.plusTage(datum, ziel),
+        bezahlt: 0,
+        gesendet: { an: `rechnung@${praxis}.beispiel.invalid`, zeit: am(datum, 16, 5) },
+        freigegebenVon: "IT",
+      };
+      r.bezahlt = bez === "voll" ? PS.summen(r).brutto : bez;
+      rechnungen.push(r);
+    }
+
+    // Kennzahlen (DSH-02): Umsatz netto je Monat, laufendes Jahr und Vorjahr, in Cent
+    const umsatz = [
+      6120000, 5870000, 6640000, 6310000, 6980000, 6450000, 5920000, 6210000, 7050000, 7280000,
+      4190000, 0,
+    ];
+    const vorjahr = [
+      5640000, 5510000, 6020000, 5980000, 6310000, 6170000, 5480000, 5730000, 6390000, 6600000,
+      6720000, 6080000,
+    ];
+
+    return {
+      version: PS.DATENVERSION,
+      tag: heute,
+      modus: null,
+      katalog,
+      material: MATERIAL,
+      praxen: PRAXEN,
+      mitarbeiter,
+      auftraege,
+      erfassungen,
+      touren,
+      rechnungen,
+      zaehler: { rechnung: 91, auftrag: 409 },
+      kennzahlen: {
+        umsatz,
+        vorjahr,
+        termintreue: 0.94,
+        durchlaufzeit: 5,
+        auslastung: { TT: 0.92, TA: 0.86, TI: 0.78, TL: 0.88, TH: 0.41 },
+      },
+      erinnerungen: [
+        { text: "Wartung Sinterofen Testheat", wann: `in ${9} Tagen`, art: "gelb" },
+        { text: "Hauptuntersuchung B-PS 102", wann: `in ${21} Tagen`, art: "" },
+        {
+          text: "Rechnung R-" + jahr + "-00089 überfällig",
+          wann: "seit 14 Tagen",
+          art: "rot",
+          ziel: "r89",
+        },
+      ],
+      benachrichtigungen: [
+        {
+          id: "b1",
+          fuer: "IT",
+          text: `Termin überfällig: Auftrag ${jahr}-00384 (Qualitätskontrolle)`,
+          zeit: vor(35),
+          gelesen: false,
+          ziel: "a384",
+        },
+        {
+          id: "b2",
+          fuer: "IT",
+          text: `Termin überfällig: Auftrag ${jahr}-00388 (In Fertigung)`,
+          zeit: vor(70),
+          gelesen: false,
+          ziel: "a388",
+        },
+        {
+          id: "b3",
+          fuer: "IT",
+          text: `Rückfrage gestellt: Auftrag ${jahr}-00393`,
+          zeit: vor(150),
+          gelesen: true,
+          ziel: "a393",
+        },
+        {
+          id: "b4",
+          fuer: "TT",
+          text: `Auftrag ${jahr}-00409 wurde Ihnen zugewiesen`,
+          zeit: vor(240),
+          gelesen: true,
+          ziel: "a409",
+        },
+      ],
+      timer: {},
+      handy: { schritt: "anmelden", rolle: null, tab: null, code: "" },
+      ipad: {
+        person: null,
+        pin: "",
+        fehlversuche: {},
+        gesperrt: { TH: true },
+        offline: false,
+        letzteAktivitaet: Date.now(),
+        liveGezeigt: false,
+      },
+      display: { offline: false, stand: new Date().toISOString() },
+    };
+  };
+})();
+
+/* Perfect Smile · Vorschau – Handy: Fahrer (KAL-08, STA-07) und Inhaber (DSH-01/02/04, AUF, RE). */
+(function () {
+  "use strict";
+  const PS = window.PS;
+  const e = PS.esc;
+  const I = PS.icon;
+
+  const KONTEN = {
+    fahrer: { email: "fritz.testfahrer@perfect-smile.invalid", kuerzel: "FT" },
+    inhaber: { email: "ines.testinhaber@perfect-smile.invalid", kuerzel: "IT" },
+  };
+  const h = () => PS.z.handy;
+  const ich = () => (h().rolle === "fahrer" ? "FT" : "IT");
+
+  // ---------- Schale ----------
+  function schale({ titel, unter = "", zurueck = false, rechts = "", inhalt, tabs = true }) {
+    return `<div class="schale">
+      <header class="kopf">
+        ${zurueck ? `<button class="icon-knopf" data-a="zurueck" aria-label="Zurück">${I("zurueck")}</button>` : ""}
+        <h1>${e(titel)}${unter ? `<span class="unter">${unter}</span>` : ""}</h1>
+        ${rechts}
+      </header>
+      <main class="inhalt" id="inhalt">${inhalt}</main>
+      ${tabs ? tabLeiste() : ""}
+    </div>`;
+  }
+  function tabLeiste() {
+    const akt = (PS.nav[0] || {}).name;
+    const tabs =
+      h().rolle === "fahrer"
+        ? [
+            ["tour", "Tour", "auto"],
+            ["woche", "Woche", "kalender"],
+            ["profil", "Profil", "person"],
+          ]
+        : [
+            ["start", "Start", "start"],
+            ["auftraege", "Aufträge", "liste"],
+            ["rechnungen", "Rechnungen", "rechnung"],
+            ["kennzahlen", "Kennzahlen", "chart"],
+            ["mehr", "Mehr", "mehr"],
+          ];
+    const entwuerfe = PS.z.rechnungen.filter((r) => r.status === "entwurf").length;
+    return `<nav class="tabs" aria-label="Bereiche">${tabs.map(([n, t, ic]) => `<button class="tab" data-a="tab" data-t="${n}" ${akt === n ? 'aria-current="page"' : ""}>${I(ic)}<span>${t}</span>${n === "rechnungen" && entwuerfe ? `<span class="punkt">${entwuerfe}</span>` : ""}</button>`).join("")}</nav>`;
+  }
+  PS.aktionen.tab = (el) => PS.ersetze(el.dataset.t);
+  PS.aktionen.zurueck = () => PS.zurueck();
+  function glocke() {
+    const n = PS.z.benachrichtigungen.filter(
+      (b) => b.fuer === ich() && !b.gelesen && artAn(b),
+    ).length;
+    return `<button class="icon-knopf" data-a="geh" data-v="meldungen" aria-label="Benachrichtigungen${n ? `, ${n} ungelesen` : ""}">${I("glocke")}${n ? `<span class="punkt">${n}</span>` : ""}</button>`;
+  }
+  function artAn(b) {
+    const art = b.text.startsWith("Termin")
+      ? "termin"
+      : b.text.startsWith("Rückfrage")
+        ? "rueckfrage"
+        : "zugewiesen";
+    return (h().aus || {})[art] !== true;
+  }
+  PS.aktionen.geh = (el) => PS.geh(el.dataset.v, { ...el.dataset });
+
+  // ---------- Anmeldung (SYS-01) ----------
+  function anmelden() {
+    return `<div class="anmeldung">
+      <div class="marke">${PS.logoZeichen()}<div><h1>Perfect Smile</h1><p class="leise">Labormanagement</p></div><span class="demo-band">Vorschau · erfundene Daten</span></div>
+      <form class="karte innen" data-senden="anmelden" novalidate>
+        <div class="feld"><label for="email">E-Mail-Adresse</label><input class="eingabe" id="email" name="email" type="email" autocomplete="username" inputmode="email" value="${e(h().email || "")}" placeholder="name@perfect-smile.de"></div>
+        <div class="feld"><label for="pw">Passwort</label><input class="eingabe" id="pw" name="pw" type="password" autocomplete="current-password" placeholder="mindestens 12 Zeichen"></div>
+        ${h().fehler ? `<p class="fehler" role="alert">${e(h().fehler)}</p>` : ""}
+        <button class="knopf gross voll" type="submit">Anmelden</button>
+      </form>
+      <section class="abschnitt"><h2>Schnell vorführen</h2>
+        <div class="liste">
+          <button class="eintrag" data-a="schnell" data-r="fahrer"><span class="logo-zeichen" style="background:var(--gruen-weich);color:var(--gruen)">${I("auto")}</span><span class="stapel wachse"><span class="fett">Als Fahrer</span><span class="leise">Fritz Testfahrer · Tour von heute</span></span>${I("pfeil")}</button>
+          <button class="eintrag" data-a="schnell" data-r="inhaber"><span class="logo-zeichen" style="background:var(--akzent-weich);color:var(--akzent-tief)">${I("chart")}</span><span class="stapel wachse"><span class="fett">Als Inhaberin</span><span class="leise">Ines Testinhaber · mit zweitem Faktor</span></span>${I("pfeil")}</button>
+        </div>
+      </section>
+      <p class="leise klein" style="text-align:center">Inhaber, Verwaltung und Administrator melden sich zusätzlich mit einem Code aus der Authenticator-App an. Nach 5 falschen Passwörtern ist das Konto 15 Minuten gesperrt.</p>
+      <button class="knopf text" data-a="vorfuehren">${I("vorfuehren")} Vorführen</button>
+    </div>`;
+  }
+  PS.aktionen.schnell = (el) => {
+    const r = el.dataset.r;
+    h().email = KONTEN[r].email;
+    h().fehler = "";
+    weiterNachPasswort(r);
+  };
+  PS.aktionen.anmelden = (form, d) => {
+    const email = String(d.get("email") || "")
+      .trim()
+      .toLowerCase();
+    const pw = String(d.get("pw") || "");
+    h().email = email;
+    const rolle = Object.keys(KONTEN).find((r) => KONTEN[r].email === email);
+    if (!email) h().fehler = "Bitte Ihre E-Mail-Adresse eingeben.";
+    else if (pw.length < 12)
+      h().fehler = "Das Passwort hat mindestens 12 Zeichen. Bitte prüfen Sie Ihre Eingabe.";
+    else if (!rolle)
+      h().fehler =
+        "E-Mail oder Passwort stimmt nicht. In der Vorschau: unten „Schnell vorführen“ wählen.";
+    else {
+      h().fehler = "";
+      weiterNachPasswort(rolle);
+      return;
+    }
+    PS.render();
+  };
+  function weiterNachPasswort(rolle) {
+    h().rolle = rolle;
+    if (rolle === "inhaber") {
+      h().schritt = "code";
+      h().code = "";
+    } else anmeldungFertig();
+    PS.render(true);
+  }
+  function anmeldungFertig() {
+    h().schritt = "app";
+    h().seit = new Date().toISOString();
+    PS.nav = [{ name: h().rolle === "fahrer" ? "tour" : "start" }];
+  }
+  function code() {
+    const c = h().code || "";
+    return `<div class="anmeldung">
+      <div class="marke">${PS.logoZeichen()}<div><h1>Bestätigungscode</h1><p class="leise">Ines Testinhaber</p></div></div>
+      <p style="text-align:center">Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein.</p>
+      <div class="code-felder" aria-label="Eingegebener Code">${[0, 1, 2, 3, 4, 5].map((i) => `<span class="${i === c.length ? "aktiv" : ""}">${c[i] || ""}</span>`).join("")}</div>
+      <p class="leise klein" style="text-align:center">In der Vorschau gilt jeder Code.</p>
+      ${ziffernfeld("codeTaste")}
+      <button class="knopf text" data-a="abbrechenCode">Abbrechen</button>
+    </div>`;
+  }
+  function ziffernfeld(aktion) {
+    const t = (z) =>
+      `<button class="ziffer" data-a="${aktion}" data-z="${z}" aria-label="${z}">${z}</button>`;
+    return `<div class="ziffern">${["1", "2", "3", "4", "5", "6", "7", "8", "9"].map(t).join("")}
+      <button class="ziffer leise-taste" data-a="${aktion}" data-z="weg" aria-label="Alles löschen">Löschen</button>${t("0")}
+      <button class="ziffer leise-taste" data-a="${aktion}" data-z="zurueck" aria-label="Letzte Ziffer löschen">${I("zurueck")}</button></div>`;
+  }
+  PS.aktionen.codeTaste = (el) => {
+    const z = el.dataset.z;
+    let c = h().code || "";
+    if (z === "weg") c = "";
+    else if (z === "zurueck") c = c.slice(0, -1);
+    else if (c.length < 6) c += z;
+    h().code = c;
+    PS.render();
+    if (c.length === 6)
+      setTimeout(() => {
+        anmeldungFertig();
+        PS.render(true);
+        PS.meldung("Angemeldet mit zweitem Faktor");
+      }, 280);
+  };
+  PS.aktionen.abbrechenCode = () => {
+    h().schritt = "anmelden";
+    PS.render(true);
+  };
+  PS.aktionen.abmelden = () =>
+    PS.frage({
+      titel: "Abmelden?",
+      text: "Sie müssen sich danach neu anmelden.",
+      ja: "Abmelden",
+      beiJa: () => {
+        h().schritt = "anmelden";
+        h().rolle = null;
+        PS.nav = [];
+        PS.render(true);
+      },
+    });
+
+  // ---------- Fahrer ----------
+  function tourHeute() {
+    return PS.z.touren.find((t) => t.tag === PS.heute() && t.fahrer === "FT");
+  }
+  function stoppKarte(t, s, i, naechster, bedienbar) {
+    const p = PS.praxis(s.praxis);
+    const auftr = s.auftraege.map((id) => PS.auftrag(id)).filter(Boolean);
+    const lief = s.art === "lieferung";
+    return `<article class="karte stopp ${s.bestaetigtAm ? "erledigt" : ""} ${naechster ? "naechster" : ""}">
+      <div class="stopp-kopf"><span class="stopp-nr">${s.bestaetigtAm ? I("check") : i + 1}</span>
+        <div class="stapel wachse">
+          <span class="art ${s.art}">${I(lief ? "runter" : "hoch")} ${lief ? "Lieferung" : "Abholung"}${naechster ? ' · <span style="color:var(--akzent)">nächster Stopp</span>' : ""}</span>
+          <h3 style="font-size:1.1875rem">${e(p.name)}</h3>
+          <span class="leise">${e(p.strasse)}, ${e(p.plz)} ${e(p.ort)}</span>
+        </div></div>
+      ${auftr.map((a) => `<div class="zeile"><span class="wachse"><span class="fett nr">Auftrag ${a.nr}</span> · ${e(a.arbeitsart)}</span>${PS.statusPille(a.status)}</div>`).join("")}
+      ${s.notiz ? `<p class="zeile oben leise">${I("notiz").replace("<svg", '<svg style="width:20px;height:20px;flex-shrink:0;margin-top:2px"')}<span>${e(s.notiz)}</span></p>` : ""}
+      <a class="tel" href="tel:${p.tel.replace(/\s/g, "")}">${I("telefon")} ${e(p.tel)}</a>
+      ${
+        s.bestaetigtAm
+          ? `<p class="bestaetigt">${I("kreischeck")} ${lief ? "Geliefert" : "Abgeholt"} um ${PS.zeit(s.bestaetigtAm)} Uhr · ${e(PS.mitarbeiter(s.bestaetigtVon).name)}</p>`
+          : bedienbar
+            ? `<button class="knopf gross voll ${lief ? "gruen" : ""}" data-a="stopp" data-id="${s.id}">${I(lief ? "check" : "hoch")} ${lief ? "Geliefert" : "Abgeholt"}</button>`
+            : ""
+      }
+    </article>`;
+  }
+  function tour() {
+    const t = tourHeute();
+    const datum = `${PS.wochentag(PS.heute())}, ${PS.datum(PS.heute())}`;
+    if (!t)
+      return schale({
+        titel: "Meine Tour",
+        unter: datum,
+        inhalt: `<div class="leer">${I("auto")}<p>Heute ist keine Tour für Sie geplant.</p></div>`,
+      });
+    const fertig = t.stopps.filter((s) => s.bestaetigtAm).length;
+    const naechsterId = (t.stopps.find((s) => !s.bestaetigtAm) || {}).id;
+    const abschluss = t.abgeschlossenAm
+      ? `<div class="hinweis gruen">${I("kreischeck")}<div><p class="fett">Tour abgeschlossen um ${PS.zeit(t.abgeschlossenAm)} Uhr</p><p>${t.kmEnde - t.kmStart} km gefahren (${punkte(t.kmStart)} → ${punkte(t.kmEnde)} km)</p></div></div>`
+      : `<form class="karte innen" data-senden="tourAbschliessen" novalidate>
+          <h2 style="font-size:1.125rem">Tour abschließen</h2>
+          <p class="leise">Kilometerstand vom Tacho eintragen.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="feld"><label for="kmStart">km Start</label><input class="eingabe zahl" id="kmStart" name="kmStart" inputmode="numeric" pattern="[0-9]*" value="${e(h().kmStart || "48210")}"></div>
+            <div class="feld"><label for="kmEnde">km Ende</label><input class="eingabe zahl" id="kmEnde" name="kmEnde" inputmode="numeric" pattern="[0-9]*" placeholder="z. B. 48262" value="${e(h().kmEnde || "")}"></div>
+          </div>
+          ${h().kmFehler ? `<p class="fehler" role="alert">${e(h().kmFehler)}</p>` : ""}
+          <button class="knopf gross voll" type="submit">Tour abschließen</button>
+        </form>`;
+    return schale({
+      titel: "Meine Tour",
+      unter: datum,
+      inhalt: `<section class="karte innen">
+          <div class="zeile"><span class="logo-zeichen" style="background:var(--akzent-weich);color:var(--akzent-tief)">${I("auto")}</span>
+            <div class="stapel wachse"><span class="fett">Fahrzeug ${e(t.fahrzeug)}</span><span class="leise">${PS.mehrzahl(t.stopps.length, "Stopp", "Stopps")} · ${t.stopps.filter((s) => s.art === "lieferung").length} Lieferungen, ${t.stopps.filter((s) => s.art === "abholung").length} Abholungen</span></div>
+            <span class="fett zahl" style="font-size:1.25rem">${fertig}/${t.stopps.length}</span></div>
+          <div class="fortschritt" role="progressbar" aria-valuemin="0" aria-valuemax="${t.stopps.length}" aria-valuenow="${fertig}" aria-label="Erledigte Stopps"><i style="width:${(fertig / t.stopps.length) * 100}%"></i></div>
+          ${fertig === t.stopps.length && !t.abgeschlossenAm ? `<p class="fett" style="color:var(--gruen)">Alle Stopps erledigt. Bitte noch den Kilometerstand eintragen.</p>` : ""}
+        </section>
+        ${t.stopps.map((s, i) => stoppKarte(t, s, i, s.id === naechsterId, true)).join("")}
+        ${abschluss}
+        <p class="leise klein" style="text-align:center">Sie sehen nur Abhol- und Lieferdaten. Patientendaten erscheinen in dieser Ansicht nie.</p>`,
+    });
+  }
+  function punkte(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+  PS.aktionen.stopp = (el) => {
+    const t = tourHeute();
+    const s = t.stopps.find((x) => x.id === el.dataset.id);
+    const p = PS.praxis(s.praxis);
+    const lief = s.art === "lieferung";
+    const auftr = s.auftraege.map((id) => PS.auftrag(id));
+    PS.frage({
+      titel: lief ? "Lieferung bestätigen?" : "Abholung bestätigen?",
+      text: `${e(p.name)}${lief && auftr.length ? `<br>${auftr.map((a) => `Auftrag ${a.nr}`).join(", ")} wird auf „Ausgeliefert“ gesetzt.` : ""}<br>Uhrzeit und Ihr Name werden gespeichert.`,
+      ja: lief ? "Ja, geliefert" : "Ja, abgeholt",
+      beiJa: () => {
+        s.bestaetigtAm = new Date().toISOString();
+        s.bestaetigtVon = "FT";
+        for (const a of auftr)
+          if (a.status === "versandbereit") PS.setzeStatus(a, "ausgeliefert", "FT");
+        PS.render();
+        PS.meldung(
+          lief
+            ? `Geliefert um ${PS.zeit(s.bestaetigtAm)} Uhr${auftr.length ? ` · ${auftr[0].nr} ist ausgeliefert` : ""}`
+            : `Abholung bestätigt um ${PS.zeit(s.bestaetigtAm)} Uhr`,
+        );
+      },
+    });
+  };
+  PS.aktionen.tourAbschliessen = (form, d) => {
+    const t = tourHeute();
+    const a = String(d.get("kmStart") || "").trim(),
+      b = String(d.get("kmEnde") || "").trim();
+    h().kmStart = a;
+    h().kmEnde = b;
+    if (!/^\d+$/.test(a) || !/^\d+$/.test(b))
+      h().kmFehler = "Bitte beide Kilometerstände als ganze Zahl eintragen.";
+    else if (Number(b) <= Number(a))
+      h().kmFehler = "Der Kilometerstand am Ende muss größer sein als am Start. Bitte prüfen.";
+    else if (Number(b) - Number(a) > 1500)
+      h().kmFehler = "Mehr als 1.500 km an einem Tag? Bitte die Eingabe prüfen.";
+    else {
+      h().kmFehler = "";
+      const offen = t.stopps.filter((s) => !s.bestaetigtAm).length;
+      const fertig = () => {
+        t.kmStart = Number(a);
+        t.kmEnde = Number(b);
+        t.abgeschlossenAm = new Date().toISOString();
+        PS.render();
+        PS.meldung(`Tour abgeschlossen · ${t.kmEnde - t.kmStart} km`);
+      };
+      if (offen) {
+        PS.frage({
+          titel: "Tour trotzdem abschließen?",
+          text: `${PS.mehrzahl(offen, "Stopp ist", "Stopps sind")} noch nicht bestätigt.`,
+          ja: "Abschließen",
+          beiJa: fertig,
+        });
+        return;
+      }
+      fertig();
+      return;
+    }
+    PS.render();
+  };
+  function woche() {
+    const tage = [0, 1, 2, 3, 4].map((n) =>
+      n === 0 ? PS.heute() : PS.plusArbeitstage(PS.heute(), n),
+    );
+    return schale({
+      titel: "Meine Woche",
+      unter: "Touren der nächsten Arbeitstage",
+      inhalt: `<div class="liste">${tage
+        .map((tag) => {
+          const t = PS.z.touren.find((x) => x.tag === tag && x.fahrer === "FT");
+          const n = t ? t.stopps.length : 0;
+          return `<button class="eintrag" data-a="${t ? "tagAnsehen" : ""}" data-tag="${tag}" ${t ? "" : "disabled"}>
+          <span class="stopp-nr" style="width:48px;height:48px;border-radius:12px;flex-direction:column;line-height:1.1"><span style="font-size:0.8125rem">${PS.wtKurz(tag)}</span><span>${tag.slice(8, 10)}</span></span>
+          <span class="stapel wachse"><span class="fett">${PS.tagName(tag)}</span><span class="leise">${t ? `${PS.mehrzahl(n, "Stopp", "Stopps")} · ${e(t.fahrzeug)}` : "Keine Tour"}</span></span>${t ? I("pfeil") : ""}</button>`;
+        })
+        .join("")}</div>
+      <p class="leise klein">Abwesenheiten trägt die Verwaltung ein. Gespeichert wird nur die Art (Urlaub oder abwesend), nie ein Grund.</p>`,
+    });
+  }
+  PS.aktionen.tagAnsehen = (el) => {
+    if (el.dataset.tag === PS.heute()) return PS.ersetze("tour");
+    PS.geh("tag", { tag: el.dataset.tag });
+  };
+  function tagAnsicht(v) {
+    const t = PS.z.touren.find((x) => x.tag === v.tag && x.fahrer === "FT");
+    return schale({
+      titel: PS.tagName(v.tag),
+      unter: `${PS.datum(v.tag)} · Fahrzeug ${e(t.fahrzeug)}`,
+      zurueck: true,
+      inhalt: `${t.stopps.map((s, i) => stoppKarte(t, s, i, false, false)).join("")}<p class="leise klein" style="text-align:center">Bestätigen geht erst am Tag der Tour.</p>`,
+    });
+  }
+  function profil() {
+    const m = PS.mitarbeiter("FT");
+    return schale({
+      titel: "Profil",
+      inhalt: `
+      <section class="karte innen"><div class="zeile"><span class="person" style="all:unset"><span class="kuerzel" style="width:56px;height:56px;border-radius:50%;background:var(--gruen-weich);color:var(--gruen);display:grid;place-items:center;font-weight:750">FT</span></span>
+        <div class="stapel"><span class="fett" style="font-size:1.125rem">${e(m.name)}</span><span class="leise">Fahrer · Fahrzeug B-PS 101</span></div></div></section>
+      <section class="abschnitt"><h2>Anmeldung</h2><div class="karte innen">
+        <dl class="info-raster"><dt>Angemeldet seit</dt><dd>${h().seit ? PS.zeit(h().seit) + " Uhr" : "–"}</dd><dt>Bleibt angemeldet</dt><dd>bis zu 12 Stunden</dd><dt>Ohne Nutzung</dt><dd>nach 60 Minuten abgemeldet</dd></dl>
+        <p class="leise klein">Beide Zeiten stellt das Labor ein. Mit installierter App öffnet der Fahrer einfach das Symbol auf dem Home-Bildschirm.</p></div></section>
+      <section class="abschnitt"><h2>Was Fahrer sehen</h2><div class="hinweis">${I("schloss")}<p>Nur eigene Touren mit Abhol- und Lieferdaten. Keine Preise, keine Rechnungen, keine Patientendaten.</p></div></section>
+      <div class="abstand-8">
+        ${PS.istInstalliert() ? "" : `<button class="knopf gross voll weich" data-a="installieren">${I("teilen")} Auf den Home-Bildschirm</button>`}
+        <button class="knopf gross voll zweit" data-a="vorfuehren">${I("vorfuehren")} Vorführen</button>
+        <button class="knopf gross voll zweit" data-a="abmelden">${I("abmelden")} Abmelden</button>
+      </div>`,
+    });
+  }
+
+  // ---------- Inhaber: Startseite (DSH-01, DSH-04) ----------
+  const FILTER = {
+    offen: { name: "Alle offenen", f: (a) => PS.OFFEN.includes(a.status) },
+    ueberfaellig: { name: "Überfällig", f: (a) => PS.ampel(a) === "rot" },
+    heute: { name: "Heute fällig", f: (a) => PS.ampel(a) === "gelb" },
+    in_fertigung: { name: "In Fertigung", f: (a) => a.status === "in_fertigung" },
+    rueckfrage: { name: "Rückfrage", f: (a) => a.status === "rueckfrage" },
+    qualitaetskontrolle: {
+      name: "Qualitätskontrolle",
+      f: (a) => a.status === "qualitaetskontrolle",
+    },
+    angenommen: { name: "Nicht zugewiesen", f: (a) => a.status === "angenommen" },
+    versandbereit: { name: "Versandbereit", f: (a) => a.status === "versandbereit" },
+    ausgeliefert: { name: "Ausgeliefert", f: (a) => a.status === "ausgeliefert" },
+    storniert: { name: "Storniert", f: (a) => a.status === "storniert" },
+  };
+  const anzahl = (k) => PS.z.auftraege.filter(FILTER[k].f).length;
+  function start() {
+    const std = PS.stundeBerlin();
+    const gruss = std < 11 ? "Guten Morgen" : std < 18 ? "Guten Tag" : "Guten Abend";
+    const entw = PS.z.rechnungen.filter((r) => r.status === "entwurf");
+    const touren = PS.z.touren.filter((t) => t.tag === PS.heute());
+    const stopps = touren.flatMap((t) => t.stopps);
+    const kachel = (k, was, farbe) =>
+      `<button class="kachel ${anzahl(k) ? farbe : ""}" data-a="zuAuftraegen" data-f="${k}"><span class="wert">${anzahl(k)}</span><span class="was">${was}</span></button>`;
+    return schale({
+      titel: `${gruss}, Ines`,
+      unter: `${PS.wochentag(PS.heute())}, ${PS.datum(PS.heute())}`,
+      rechts: glocke(),
+      inhalt: `<div class="kacheln">${kachel("heute", "heute fällig", "gelb")}${kachel("ueberfaellig", "überfällig", "rot")}${kachel("in_fertigung", "in Fertigung", "")}${kachel("rueckfrage", "offene Rückfragen", "gelb")}</div>
+      ${
+        entw.length
+          ? `<button class="karte innen" data-a="tab" data-t="rechnungen" style="text-align:left;border-color:var(--akzent)">
+          <div class="zeile"><span class="logo-zeichen">${I("rechnung")}</span><div class="stapel wachse"><span class="fett">${PS.mehrzahl(entw.length, "Rechnung wartet", "Rechnungen warten")} auf Ihre Freigabe</span><span class="leise zahl">zusammen ${PS.euro(entw.reduce((s, r) => s + PS.summen(r).brutto, 0))} brutto</span></div>${I("pfeil")}</div></button>`
+          : ""
+      }
+      <section class="abschnitt"><h2>Heute unterwegs</h2><div class="karte innen">
+        <div class="zeile"><span class="wachse">${PS.mehrzahl(touren.length, "Tour", "Touren")} · ${PS.mehrzahl(stopps.length, "Stopp", "Stopps")}</span><span class="fett zahl">${stopps.filter((s) => s.bestaetigtAm).length} erledigt</span></div>
+        <div class="fortschritt"><i style="width:${stopps.length ? (stopps.filter((s) => s.bestaetigtAm).length / stopps.length) * 100 : 0}%"></i></div>
+        ${stopps
+          .filter((s) => s.bestaetigtAm)
+          .slice(-2)
+          .map(
+            (s) =>
+              `<p class="leise klein">${I("check").replace("<svg", '<svg style="width:16px;height:16px;vertical-align:-3px;color:var(--gruen)"')} ${s.art === "lieferung" ? "Geliefert" : "Abgeholt"}: ${e(PS.praxis(s.praxis).kurz)} um ${PS.zeit(s.bestaetigtAm)} Uhr</p>`,
+          )
+          .join("")}
+      </div></section>
+      <section class="abschnitt"><h2>Erinnerungen</h2><div class="liste">${PS.z.erinnerungen
+        .map(
+          (
+            r,
+          ) => `<button class="eintrag" ${r.ziel ? `data-a="geh" data-v="rechnung" data-id="${r.ziel}"` : "disabled"} style="${r.ziel ? "" : "opacity:1"}">
+          <span class="ampel ${r.art}" style="width:10px"></span><span class="stapel wachse"><span class="fett">${e(r.text)}</span><span class="leise">${e(r.wann)}</span></span>${r.ziel ? I("pfeil") : ""}</button>`,
+        )
+        .join("")}</div></section>`,
+    });
+  }
+  PS.aktionen.zuAuftraegen = (el) => {
+    PS.nav = [{ name: "auftraege", f: el.dataset.f }];
+    PS.render(true);
+  };
+
+  // ---------- Inhaber: Aufträge (AUF-08) ----------
+  function auftragZeile(a) {
+    const amp = PS.ampel(a);
+    return `<button class="eintrag" data-a="geh" data-v="auftrag" data-id="${a.id}" style="${amp === "rot" ? "box-shadow:inset 5px 0 0 var(--rot)" : amp === "gelb" ? "box-shadow:inset 5px 0 0 var(--gelb-rand)" : ""}">
+      <span class="stapel wachse">
+        <span class="zeile"><span class="fett nr wachse">${a.nr}</span>${PS.statusPille(a.status)}</span>
+        <span>${e(PS.praxis(a.praxis).kurz)} · ${e(a.arbeitsart)}</span>
+        <span class="zeile leise"><span class="wachse">${PS.terminText(a)}</span><span class="fett">${a.techniker || "–"}</span></span>
+      </span></button>`;
+  }
+  function trefferListe(f, q) {
+    const s = (q || "").trim().toLowerCase();
+    const liste = PS.z.auftraege
+      .filter(FILTER[f].f)
+      .filter(
+        (a) =>
+          !s ||
+          a.nr.includes(s) ||
+          PS.praxis(a.praxis).name.toLowerCase().includes(s) ||
+          a.arbeitsart.toLowerCase().includes(s),
+      )
+      .sort((a, b) => a.termin.localeCompare(b.termin));
+    if (!liste.length)
+      return `<div class="leer">${I("suche")}<p>Keine Aufträge gefunden.${s ? " Andere Suche versuchen." : ""}</p></div>`;
+    return `<p class="leise klein" style="padding-left:4px">${PS.mehrzahl(liste.length, "Auftrag", "Aufträge")}</p><div class="liste">${liste.map(auftragZeile).join("")}</div>`;
+  }
+  function auftraege(v) {
+    const f = v.f || "offen";
+    return schale({
+      titel: "Aufträge",
+      rechts: glocke(),
+      inhalt: `<div class="feld"><label class="vh" for="suche">Suchen</label><input class="eingabe" id="suche" type="search" placeholder="Auftragsnummer, Praxis oder Arbeitsart" data-eingabe="suche" value="${e(v.q || "")}" autocomplete="off"></div>
+      <div class="chips" role="group" aria-label="Filter">${Object.keys(FILTER)
+        .map(
+          (k) =>
+            `<button class="chip" data-a="filter" data-f="${k}" aria-pressed="${k === f}">${FILTER[k].name} <span class="anz">${anzahl(k)}</span></button>`,
+        )
+        .join("")}</div>
+      <div id="treffer" class="abstand-8">${trefferListe(f, v.q)}</div>`,
+    });
+  }
+  PS.aktionen.filter = (el) => {
+    const v = PS.ansicht();
+    v.f = el.dataset.f;
+    PS.render();
+  };
+  PS.aktionen.suche = (el) => {
+    const v = PS.ansicht();
+    v.q = el.value;
+    document.getElementById("treffer").innerHTML = trefferListe(v.f || "offen", v.q);
+  };
+
+  // ---------- Inhaber: Auftrag ----------
+  function auftragAnsicht(v) {
+    const a = PS.auftrag(v.id);
+    const p = PS.praxis(a.praxis);
+    const erf = PS.z.erfassungen.filter((x) => x.auftrag === a.id);
+    const min = erf.filter((x) => x.art === "zeit").reduce((s, x) => s + x.minuten, 0);
+    const leist = erf.filter((x) => x.art === "leistung");
+    const wert = leist.reduce((s, x) => s + x.menge * x.preis, 0);
+    const wechsel = PS.wechselFuer(a, "inhaber", false);
+    return schale({
+      titel: `Auftrag ${a.nr}`,
+      unter: e(p.kurz),
+      zurueck: true,
+      inhalt: `<section class="karte innen">
+          <div class="zeile">${PS.statusPille(a.status)}<span class="wachse"></span>${PS.terminText(a)}</div>
+          <dl class="info-raster">
+            <dt>Praxis</dt><dd>${e(p.name)}</dd><dt>Behandler</dt><dd>${e(a.behandler)}</dd>
+            <dt>Patient</dt><dd>${e(a.patient)} <span class="leise klein" style="font-weight:500">(Kürzel)</span></dd>
+            <dt>Arbeitsart</dt><dd>${e(a.arbeitsart)}</dd><dt>Eingang</dt><dd>${PS.datum(a.eingang)}</dd>
+            <dt>Liefertermin</dt><dd>${PS.datum(a.termin)}</dd><dt>Techniker</dt><dd>${a.techniker ? e(PS.mitarbeiter(a.techniker).name) : "noch nicht zugewiesen"}</dd>
+          </dl>
+          <p class="leise klein">${I("schloss").replace("<svg", '<svg style="width:16px;height:16px;vertical-align:-3px"')} Das Öffnen dieses Auftrags steht im Zugriffsprotokoll.</p>
+        </section>
+        ${wechsel.length ? `<section class="abstand-8">${wechsel.map((w, i) => `<button class="knopf gross voll ${w.gefahr ? (w.zweit ? "zweit" : "gefahr") : w.zweit ? "zweit" : ""}" style="${w.gefahr && w.zweit ? "color:var(--rot)" : ""}" data-a="wechsel" data-id="${a.id}" data-i="${i}">${e(w.text)}</button>`).join("")}</section>` : ""}
+        <section class="abschnitt"><h2>Positionen</h2><div class="liste">${a.positionen
+          .map((x) => {
+            const l = PS.leistung(x.nr);
+            return `<div class="eintrag"><span class="stapel wachse"><span class="fett">${x.menge} × ${e(l.bezeichnung)}</span><span class="leise">${[x.zaehne.length ? `Zähne ${x.zaehne.join(", ")}` : "", x.farbe ? `Farbe ${x.farbe}` : "", l.nr].filter(Boolean).join(" · ")}</span></span></div>`;
+          })
+          .join("")}</div></section>
+        <section class="abschnitt"><h2>Erfasst am iPad</h2><div class="karte innen"><dl class="info-raster"><dt>Zeit</dt><dd class="zahl">${min ? PS.dauer(min) : "–"}</dd><dt>Leistungen</dt><dd class="zahl">${leist.length ? `${PS.mehrzahl(leist.length, "Eintrag", "Einträge")} · ${PS.euro(wert)} netto` : "–"}</dd></dl></div></section>
+        <section class="abschnitt"><h2>Verlauf</h2><div class="karte innen"><ol class="verlauf">${a.verlauf
+          .slice()
+          .reverse()
+          .map(
+            (x) =>
+              `<li><div class="stapel"><span class="fett">${PS.STATUS[x.status]}</span><span class="leise klein">${PS.datum(new Date(x.zeit))}, ${PS.zeit(x.zeit)} Uhr · ${e(PS.mitarbeiter(x.wer).name)}</span>${x.notiz ? `<span>„${e(x.notiz)}“</span>` : ""}</div></li>`,
+          )
+          .join("")}</ol></div></section>
+        <section class="abschnitt"><h2>Notizen <button class="knopf text" data-a="notizNeu" data-id="${a.id}">${I("plus")} Notiz</button></h2>
+          ${
+            a.notizen.length
+              ? `<div class="liste">${a.notizen
+                  .slice()
+                  .reverse()
+                  .map(
+                    (n) =>
+                      `<div class="eintrag"><span class="stapel wachse"><span>${e(n.text)}</span><span class="leise klein">${e(PS.mitarbeiter(n.wer).name)} · ${PS.datum(new Date(n.zeit))}, ${PS.zeit(n.zeit)} Uhr</span></span></div>`,
+                  )
+                  .join("")}</div>`
+              : `<p class="leise">Noch keine Notizen.</p>`
+          }
+          <p class="leise klein">Notizen lassen sich nach dem Speichern nicht löschen. Eine Korrektur ist eine neue Notiz.</p></section>`,
+    });
+  }
+  PS.aktionen.wechsel = (el) => {
+    const a = PS.auftrag(el.dataset.id);
+    const w = PS.wechselFuer(a, "inhaber", false)[Number(el.dataset.i)];
+    if (w.wahl === "techniker") return zuweisen(a);
+    if (w.notiz) {
+      PS._wechsel = { a: a.id, w };
+      PS.blatt(
+        `<h2>${e(w.text)}</h2><form class="abstand-8" data-senden="wechselNotiz" novalidate>
+        <div class="feld"><label for="notiz">${e(w.notiz)}</label><textarea class="eingabe" id="notiz" name="notiz" autofocus></textarea></div>
+        <p class="fehler" id="notizFehler" role="alert" hidden>Bitte eine Notiz eingeben. Ohne Notiz lässt sich der Status nicht setzen.</p>
+        <div class="knoepfe"><button class="knopf gross ${w.gefahr ? "gefahr" : ""}" type="submit">Speichern</button><button class="knopf gross zweit" type="button" data-a="blattZu">Abbrechen</button></div></form>`,
+        { titel: w.text },
+      );
+      return;
+    }
+    PS.frage({
+      titel: `${w.text}?`,
+      text:
+        w.nach === "versandbereit"
+          ? "Der Lieferschein wird dabei automatisch erzeugt und am Auftrag abgelegt."
+          : "",
+      ja: "Ja, weiter",
+      beiJa: () => {
+        PS.setzeStatus(a, w.nach, "IT");
+        PS.render();
+        PS.meldung(
+          w.nach === "versandbereit"
+            ? `${a.nr} ist versandbereit · Lieferschein erzeugt`
+            : `${a.nr}: ${PS.STATUS[w.nach]}`,
+        );
+      },
+    });
+  };
+  PS.aktionen.wechselNotiz = (form, d) => {
+    const text = String(d.get("notiz") || "").trim();
+    if (!text) {
+      form.querySelector("#notizFehler").hidden = false;
+      return;
+    }
+    const { a: id, w } = PS._wechsel;
+    const a = PS.auftrag(id);
+    PS.setzeStatus(a, w.nach, "IT", text);
+    PS.schliesseBlatt();
+    PS.render();
+    PS.meldung(`${a.nr}: ${PS.STATUS[w.nach]}`);
+  };
+  PS.aktionen.notizNeu = (el) => {
+    PS._notizAuftrag = el.dataset.id;
+    PS.blatt(
+      `<h2>Notiz zum Auftrag</h2><form class="abstand-8" data-senden="notizSpeichern" novalidate>
+      <div class="feld"><label for="notiz">Notiz</label><textarea class="eingabe" id="notiz" name="notiz" autofocus placeholder="z. B. Praxis wünscht Lieferung bis 12 Uhr"></textarea></div>
+      <p class="fehler" id="notizFehler" role="alert" hidden>Bitte einen Text eingeben.</p>
+      <div class="knoepfe"><button class="knopf gross" type="submit">Notiz speichern</button><button class="knopf gross zweit" type="button" data-a="blattZu">Abbrechen</button></div></form>`,
+      { titel: "Notiz" },
+    );
+  };
+  PS.aktionen.notizSpeichern = (form, d) => {
+    const text = String(d.get("notiz") || "").trim();
+    if (!text) {
+      form.querySelector("#notizFehler").hidden = false;
+      return;
+    }
+    PS.auftrag(PS._notizAuftrag).notizen.push({ text, zeit: new Date().toISOString(), wer: "IT" });
+    PS.schliesseBlatt();
+    PS.render();
+    PS.meldung("Notiz gespeichert");
+  };
+  /** AUF-06/07, KAL-06: Zuweisen mit geplanten Stunden der nächsten 5 Arbeitstage, Abwesende gekennzeichnet */
+  function geplant(k) {
+    const basis = {
+      TT: [7.5, 8, 6, 5, 3],
+      TA: [8, 7, 7.5, 4, 2],
+      TI: [5, 6.5, 4, 3, 2],
+      TL: [7, 7.5, 8, 6, 4],
+      TH: [0, 0, 0, 0, 0],
+    }[k];
+    return basis;
+  }
+  function zuweisen(a) {
+    const tage = [1, 2, 3, 4, 5].map((n) => PS.plusArbeitstage(PS.heute(), n - 1));
+    const techs = Object.values(PS.z.mitarbeiter).filter((m) => m.rollen.includes("techniker"));
+    PS._zuweisen = { a: a.id, wahl: null };
+    PS.blatt(
+      `<h2>Techniker zuweisen</h2><p class="leise">Geplante Stunden der nächsten 5 Arbeitstage (${tage.map((t) => PS.wtKurz(t)).join(", ")}).</p>
+      <div class="liste" id="techWahl">${techs
+        .map((m) => {
+          const g = geplant(m.kuerzel);
+          const tagStd = m.std / 5;
+          return `<button class="eintrag" data-a="techWahl" data-k="${m.kuerzel}" ${m.abwesend ? 'aria-disabled="true" style="opacity:.6"' : ""}>
+          <span class="stopp-nr">${m.kuerzel}</span>
+          <span class="stapel wachse"><span class="fett">${e(m.name)}${m.abwesend ? ` · <span style="color:var(--gelb)">${e(m.abwesend)}</span>` : ""}</span>
+          <span style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px">${g.map((x) => `<span title="${PS.stunden(x * 60)}" style="height:22px;border-radius:5px;background:var(--grau-weich);position:relative;overflow:hidden"><i style="position:absolute;left:0;bottom:0;right:0;height:${Math.min(100, (x / tagStd) * 100)}%;background:${x > tagStd ? "var(--gelb-rand)" : "var(--akzent)"};opacity:.85"></i></span>`).join("")}</span>
+          <span class="leise klein zahl">${m.abwesend ? "diese Woche nicht da" : `${PS.stunden(g.reduce((s, x) => s + x, 0) * 60)} von ${m.std} h verplant`}</span></span>
+          <span class="wahl-haken" data-k="${m.kuerzel}" aria-hidden="true"></span></button>`;
+        })
+        .join("")}</div>
+      <div class="knoepfe"><button class="knopf gross" id="zuweisenOk" data-a="zuweisenOk" disabled>Zuweisen</button><button class="knopf gross zweit" data-a="blattZu">Abbrechen</button></div>`,
+      { titel: "Zuweisen" },
+    );
+  }
+  PS.aktionen.techWahl = (el) => {
+    if (el.getAttribute("aria-disabled") === "true") {
+      PS.meldung("Abwesend – bitte jemand anderen wählen", "warn");
+      return;
+    }
+    PS._zuweisen.wahl = el.dataset.k;
+    document.querySelectorAll("#techWahl .eintrag").forEach((x) => {
+      x.style.background = x === el ? "var(--akzent-weich)" : "";
+    });
+    document.getElementById("zuweisenOk").disabled = false;
+  };
+  PS.aktionen.zuweisenOk = () => {
+    const a = PS.auftrag(PS._zuweisen.a);
+    const k = PS._zuweisen.wahl;
+    a.techniker = k;
+    PS.setzeStatus(a, "zugewiesen", "IT");
+    PS.z.benachrichtigungen.push({
+      id: PS.id("b"),
+      fuer: k,
+      text: `Auftrag ${a.nr} wurde Ihnen zugewiesen`,
+      zeit: new Date().toISOString(),
+      gelesen: false,
+      ziel: a.id,
+    });
+    if (k === "TT") PS.z.ipad.neu = a.id;
+    PS.schliesseBlatt();
+    PS.render();
+    PS.meldung(`Zugewiesen an ${PS.mitarbeiter(k).name} · erscheint sofort auf dem iPad`);
+  };
+
+  // ---------- Inhaber: Rechnungen (RE-01 bis RE-10) ----------
+  function rechnungen(v) {
+    const seg = v.seg || "entwurf";
+    const alle = PS.z.rechnungen;
+    const frei = alle.filter((r) => r.status === "freigegeben");
+    const offenSumme = frei.reduce((s, r) => s + Math.max(0, PS.summen(r).brutto - r.bezahlt), 0);
+    let liste = "";
+    if (seg === "entwurf") {
+      const en = alle.filter((r) => r.status === "entwurf");
+      liste = en.length
+        ? `<div class="liste">${en.map((r) => `<button class="eintrag" data-a="geh" data-v="rechnung" data-id="${r.id}"><span class="stapel wachse"><span class="zeile"><span class="fett wachse">${e(PS.praxis(r.praxis).kurz)}</span><span class="pille z-entwurf ohne-punkt">Entwurf</span></span><span class="leise">${e(r.art)} · ${PS.mehrzahl(r.auftraege.length, "Auftrag", "Aufträge")}</span><span class="fett zahl">${PS.euro(PS.summen(r).brutto)}</span></span>${I("pfeil")}</button>`).join("")}</div>`
+        : `<div class="leer">${I("kreischeck")}<p>Alle Entwürfe sind freigegeben.</p></div>`;
+    } else if (seg === "frei") {
+      liste = `<div class="liste">${frei
+        .slice()
+        .sort((a, b) => b.nummer.localeCompare(a.nummer))
+        .map((r) => {
+          const z = PS.zahlungsstatus(r);
+          return `<button class="eintrag" data-a="geh" data-v="rechnung" data-id="${r.id}"><span class="stapel wachse"><span class="zeile"><span class="fett nr wachse">${r.nummer}</span><span class="pille z-${z}">${PS.ZAHLUNG[z]}</span></span><span>${e(PS.praxis(r.praxis).kurz)} · ${PS.datum(r.datum)}</span><span class="fett zahl">${PS.euro(PS.summen(r).brutto)}</span></span>${I("pfeil")}</button>`;
+        })
+        .join("")}</div>`;
+    } else {
+      const ueber = frei
+        .filter((r) => PS.zahlungsstatus(r) === "ueberfaellig")
+        .sort((a, b) => a.faellig.localeCompare(b.faellig));
+      liste = ueber.length
+        ? `<div class="liste">${ueber.map((r) => `<button class="eintrag" data-a="geh" data-v="rechnung" data-id="${r.id}" style="box-shadow:inset 5px 0 0 var(--rot)"><span class="stapel wachse"><span class="zeile"><span class="fett nr wachse">${r.nummer}</span><span class="fett" style="color:var(--rot)">${PS.tageZwischen(r.faellig, PS.heute())} Tage</span></span><span>${e(PS.praxis(r.praxis).name)}</span><span class="zahl">offen ${PS.euro(PS.summen(r).brutto - r.bezahlt)}</span></span>${I("pfeil")}</button>`).join("")}</div><p class="leise klein">Nur Liste, kein automatischer Mahnversand.</p>`
+        : `<div class="leer">${I("kreischeck")}<p>Keine überfälligen Rechnungen.</p></div>`;
+    }
+    const nEnt = alle.filter((r) => r.status === "entwurf").length;
+    const nUeb = frei.filter((r) => PS.zahlungsstatus(r) === "ueberfaellig").length;
+    return schale({
+      titel: "Rechnungen",
+      rechts: glocke(),
+      inhalt: `<section class="karte innen"><div class="zeile"><span class="stapel wachse"><span class="leise">Offene Rechnungssumme</span><span class="zahl" style="font-size:1.75rem;font-weight:750;font-family:var(--schrift-titel)">${PS.euro(offenSumme)}</span></span></div><p class="leise klein">Brutto freigegebener Rechnungen minus erfasste Zahlungen</p></section>
+      <div class="segment" role="group" aria-label="Ansicht"><button data-a="seg" data-s="entwurf" aria-pressed="${seg === "entwurf"}">Entwürfe${nEnt ? ` (${nEnt})` : ""}</button><button data-a="seg" data-s="frei" aria-pressed="${seg === "frei"}">Freigegeben</button><button data-a="seg" data-s="mahn" aria-pressed="${seg === "mahn"}">Mahnliste${nUeb ? ` (${nUeb})` : ""}</button></div>
+      ${liste}`,
+    });
+  }
+  PS.aktionen.seg = (el) => {
+    PS.ansicht().seg = el.dataset.s;
+    PS.render();
+  };
+  function rechnungAnsicht(v) {
+    const r = PS.z.rechnungen.find((x) => x.id === v.id);
+    const p = PS.praxis(r.praxis);
+    const s = PS.summen(r);
+    const z = PS.zahlungsstatus(r);
+    const gruppen = {};
+    for (const x of r.positionen)
+      (gruppen[x.auftrag || "Weitere Positionen"] =
+        gruppen[x.auftrag || "Weitere Positionen"] || []).push(x);
+    const kopf =
+      r.status === "entwurf"
+        ? `<div class="hinweis">${I("info")}<p>Entwurf. Die Rechnungsnummer vergibt das System erst bei der Freigabe. Freigeben darf nur die Inhaberin.</p></div>`
+        : `<section class="karte innen"><div class="zeile"><span class="fett nr wachse" style="font-size:1.25rem">${r.nummer}</span><span class="pille z-${z}">${PS.ZAHLUNG[z]}</span></div>
+          <dl class="info-raster"><dt>Rechnungsdatum</dt><dd>${PS.datum(r.datum)}</dd><dt>Fällig am</dt><dd>${PS.datum(r.faellig)}</dd><dt>Bezahlt</dt><dd class="zahl">${PS.euro(r.bezahlt)}</dd>
+          <dt>Versand</dt><dd>${r.gesendet ? `${PS.datum(new Date(r.gesendet.zeit))}, ${PS.zeit(r.gesendet.zeit)} Uhr an ${e(r.gesendet.an)}` : "noch nicht gesendet"}</dd></dl>
+          <p class="leise klein">${I("schloss").replace("<svg", '<svg style="width:16px;height:16px;vertical-align:-3px"')} Freigegeben und unveränderbar. Korrektur nur per Stornorechnung oder Gutschrift.</p></section>`;
+    const knoepfe =
+      r.status === "entwurf"
+        ? `<button class="knopf gross voll" data-a="freigeben" data-id="${r.id}">${I("check")} Rechnung freigeben</button>`
+        : `${r.gesendet ? "" : `<button class="knopf gross voll" data-a="senden" data-id="${r.id}">${I("sende")} Per E-Mail senden</button>`}
+         ${z !== "bezahlt" ? `<button class="knopf gross voll zweit" data-a="zahlung" data-id="${r.id}">Zahlungseingang erfassen</button>` : ""}`;
+    return schale({
+      titel: r.nummer || "Rechnungsentwurf",
+      unter: e(p.kurz),
+      zurueck: true,
+      inhalt: `${kopf}
+        <section class="karte innen"><p class="ueberschrift">Empfänger</p><p class="fett">${e(p.name)}</p><p class="leise">${e(p.strasse)}, ${e(p.plz)} ${e(p.ort)} · Kundennr. ${p.nummer}</p><p class="leise">${e(r.art)} · Leistungszeitraum ${e(r.zeitraum)}</p></section>
+        ${Object.keys(gruppen)
+          .map(
+            (g) =>
+              `<section class="abschnitt"><h2>${g === "Weitere Positionen" ? g : `Auftrag ${g}`}</h2><div class="liste">${gruppen[g].map((x) => `<div class="eintrag"><span class="stapel wachse"><span class="zeile oben"><span class="wachse">${x.menge} × ${e(x.text)}</span><span class="fett zahl">${PS.euro(x.menge * x.preis)}</span></span><span class="leise klein">${x.nr} · ${PS.euro(x.preis)} je ${e(PS.leistung(x.nr).einheit)} ·${x.steuer} % · <span class="pille ohne-punkt" style="padding:0 8px;font-size:0.8125rem">${x.herkunft}</span></span></span></div>`).join("")}</div></section>`,
+          )
+          .join("")}
+        <section class="karte innen">
+          <div class="betrag-zeile"><span>Netto</span><span>${PS.euro(s.netto)}</span></div>
+          ${s.steuern.map((x) => `<div class="betrag-zeile leise"><span>Umsatzsteuer ${x.satz} % auf ${PS.euro(x.netto)}</span><span>${PS.euro(x.steuer)}</span></div>`).join("")}
+          <div class="betrag-zeile summe"><span>Brutto</span><span>${PS.euro(s.brutto)}</span></div>
+        </section>
+        <div class="abstand-8">${knoepfe}</div>`,
+    });
+  }
+  PS.aktionen.freigeben = (el) => {
+    const r = PS.z.rechnungen.find((x) => x.id === el.dataset.id);
+    const nr = PS.nummer("R-", PS.z.zaehler.rechnung + 1);
+    PS.frage({
+      titel: "Rechnung freigeben?",
+      text: `Sie erhält die Nummer <b>${nr}</b> und lässt sich danach nicht mehr ändern. Brutto ${PS.euro(PS.summen(r).brutto)}.`,
+      ja: "Freigeben",
+      beiJa: () => {
+        PS.z.zaehler.rechnung += 1;
+        r.nummer = nr;
+        r.status = "freigegeben";
+        r.datum = PS.heute();
+        r.faellig = PS.plusTage(PS.heute(), 30);
+        r.freigegebenVon = "IT";
+        for (const id of r.auftraege) {
+          const a = PS.auftrag(id);
+          if (a && a.status === "ausgeliefert") PS.setzeStatus(a, "abgerechnet", "IT");
+        }
+        PS.render();
+        PS.meldung(`${nr} freigegeben · Aufträge sind abgerechnet`);
+      },
+    });
+  };
+  PS.aktionen.senden = (el) => {
+    const r = PS.z.rechnungen.find((x) => x.id === el.dataset.id);
+    const an = `rechnung@${r.praxis}.beispiel.invalid`;
+    PS.frage({
+      titel: "Rechnung senden?",
+      text: `PDF an ${e(an)}. Die Mail steht danach in der Kundenhistorie. (In der Vorschau geht keine echte Mail raus.)`,
+      ja: "Senden",
+      beiJa: () => {
+        r.gesendet = { an, zeit: new Date().toISOString() };
+        PS.render();
+        PS.meldung(`Gesendet an ${an}`);
+      },
+    });
+  };
+  PS.aktionen.zahlung = (el) => {
+    const r = PS.z.rechnungen.find((x) => x.id === el.dataset.id);
+    PS._zahlung = r.id;
+    const offen = PS.summen(r).brutto - r.bezahlt;
+    PS.blatt(
+      `<h2>Zahlungseingang</h2><form class="abstand-8" data-senden="zahlungSpeichern" novalidate>
+      <div class="feld"><label for="betrag">Betrag in Euro</label><input class="eingabe zahl" id="betrag" name="betrag" inputmode="decimal" value="${PS.euro(offen).replace(" €", "")}" autofocus></div>
+      <p class="leise klein">Noch offen: ${PS.euro(offen)}</p>
+      <p class="fehler" id="betragFehler" role="alert" hidden></p>
+      <div class="knoepfe"><button class="knopf gross" type="submit">Zahlung speichern</button><button class="knopf gross zweit" type="button" data-a="blattZu">Abbrechen</button></div></form>`,
+      { titel: "Zahlung" },
+    );
+  };
+  PS.aktionen.zahlungSpeichern = (form, d) => {
+    const r = PS.z.rechnungen.find((x) => x.id === PS._zahlung);
+    const c = PS.leseEuro(d.get("betrag"));
+    const f = form.querySelector("#betragFehler");
+    const offen = PS.summen(r).brutto - r.bezahlt;
+    if (c === null || c <= 0) {
+      f.textContent = "Bitte einen Betrag wie 1.234,56 eingeben.";
+      f.hidden = false;
+      return;
+    }
+    if (c > offen) {
+      f.textContent = `Der Betrag ist höher als der offene Rest von ${PS.euro(offen)}. Bitte prüfen.`;
+      f.hidden = false;
+      return;
+    }
+    r.bezahlt += c;
+    PS.schliesseBlatt();
+    PS.render();
+    PS.meldung(`${PS.euro(c)} erfasst · ${PS.ZAHLUNG[PS.zahlungsstatus(r)]}`);
+  };
+
+  // ---------- Inhaber: Kennzahlen (DSH-02, DSH-03, DSH-05) ----------
+  function kennzahlen(v) {
+    const zr = v.zr || "monat";
+    const k = PS.z.kennzahlen;
+    const heute = PS.heute();
+    const mon = Number(heute.slice(5, 7)) - 1;
+    const tagImMonat = Number(heute.slice(8, 10));
+    const tageMonat = new Date(Date.UTC(Number(heute.slice(0, 4)), mon + 1, 0)).getUTCDate();
+    const anteil = tagImMonat / tageMonat;
+    const ums = k.umsatz.map((x, i) =>
+      i < mon ? x : i === mon ? Math.round(k.vorjahr[i] * 1.07 * anteil) : null,
+    );
+    const vj = k.vorjahr.map((x, i) => (i === mon ? Math.round(x * anteil) : x));
+    const von = zr === "monat" ? mon : zr === "quartal" ? Math.max(0, mon - 2) : 0;
+    const summe = (arr) => arr.slice(von, mon + 1).reduce((s, x) => s + (x || 0), 0);
+    const jetzt = summe(ums),
+      vorher = summe(vj);
+    const diff = vorher ? (jetzt - vorher) / vorher : 0;
+    const frei = PS.z.rechnungen.filter((r) => r.status === "freigegeben");
+    const offen = frei.reduce((s, r) => s + Math.max(0, PS.summen(r).brutto - r.bezahlt), 0);
+    const zeitraumName = {
+      monat: "Laufender Monat",
+      quartal: "Letzte 3 Monate",
+      jahr: "Laufendes Jahr",
+    }[zr];
+    // Säulendiagramm, ein Maßstab für beide Reihen
+    const W = 340,
+      H = 170,
+      links = 34,
+      unten = 22,
+      breite = (W - links) / 12;
+    const max = 8000000;
+    const y = (c) => H - unten - (c / max) * (H - unten - 8);
+    const ticks = [0, 2500000, 5000000, 7500000];
+    const M = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+    const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Umsatz je Monat, laufendes Jahr gegen Vorjahr">
+      ${ticks.map((t) => `<line x1="${links}" x2="${W}" y1="${y(t)}" y2="${y(t)}" stroke="var(--linie)" stroke-width="1"/><text x="${links - 6}" y="${y(t) + 4}" text-anchor="end">${t / 100000}</text>`).join("")}
+      ${M.map((m, i) => {
+        const x0 = links + i * breite;
+        const im = i >= von && i <= mon;
+        return `<rect x="${x0 + 3}" y="${y(vj[i])}" width="${breite / 2 - 3}" height="${H - unten - y(vj[i])}" rx="2" fill="var(--linie)"/>
+        ${ums[i] !== null ? `<rect x="${x0 + breite / 2}" y="${y(ums[i])}" width="${breite / 2 - 3}" height="${H - unten - y(ums[i])}" rx="2" fill="var(--akzent)" opacity="${im ? 1 : 0.45}"/>` : ""}
+        <text x="${x0 + breite / 2}" y="${H - 6}" text-anchor="middle" style="${i === mon ? "font-weight:700;fill:var(--tinte)" : ""}">${m}</text>`;
+      }).join("")}
+    </svg>`;
+    const kunden = [
+      ["p2", 0.24],
+      ["p1", 0.22],
+      ["p3", 0.19],
+      ["p4", 0.15],
+      ["p5", 0.08],
+    ];
+    return schale({
+      titel: "Kennzahlen",
+      rechts: glocke(),
+      inhalt: `<div class="segment" role="group" aria-label="Zeitraum"><button data-a="zr" data-z="monat" aria-pressed="${zr === "monat"}">Monat</button><button data-a="zr" data-z="quartal" aria-pressed="${zr === "quartal"}">Quartal</button><button data-a="zr" data-z="jahr" aria-pressed="${zr === "jahr"}">Jahr</button></div>
+      <section class="karte innen"><p class="leise">Umsatz netto · ${zeitraumName}</p>
+        <div class="zeile" style="align-items:baseline"><span class="zahl" style="font-size:2rem;font-weight:750;font-family:var(--schrift-titel);letter-spacing:-0.02em">${PS.euro(jetzt)}</span></div>
+        <p class="fett" style="color:${diff >= 0 ? "var(--gruen)" : "var(--rot)"}">${diff >= 0 ? "▲" : "▼"} ${String(Math.abs(Math.round(diff * 1000)) / 10).replace(".", ",")} % zum Vorjahreszeitraum (${PS.euro(vorher)})</p>
+        <div class="diagramm">${svg}</div>
+        <div class="legende"><span><i style="background:var(--akzent)"></i>${heute.slice(0, 4)}</span><span><i style="background:var(--linie)"></i>${Number(heute.slice(0, 4)) - 1}</span><span>in Tsd. €</span></div>
+      </section>
+      <div class="kacheln">
+        <div class="kachel"><span class="wert" style="font-size:1.5rem">${PS.euro(offen)}</span><span class="was">offene Rechnungen</span></div>
+        <div class="kachel"><span class="wert">${PS.prozent(k.termintreue)}</span><span class="was">Termintreue</span></div>
+        <div class="kachel"><span class="wert">${k.durchlaufzeit}</span><span class="was">Arbeitstage Durchlaufzeit (Median)</span></div>
+        <div class="kachel"><span class="wert">${PS.z.auftraege.filter((a) => PS.OFFEN.includes(a.status)).length}</span><span class="was">offene Aufträge</span></div>
+      </div>
+      <section class="abschnitt"><h2>Auslastung je Techniker</h2><div class="karte innen">${Object.entries(
+        k.auslastung,
+      )
+        .map(
+          ([kz, x]) =>
+            `<div class="balken-zeile"><span>${e(PS.mitarbeiter(kz).vorname)}</span><span class="balken"><i class="${x > 0.9 ? "hoch" : ""}" style="width:${Math.min(100, x * 100)}%"></i></span><span class="zahl fett" style="text-align:right">${PS.prozent(x)}</span></div>`,
+        )
+        .join("")}
+        <p class="leise klein">Erfasste Stunden geteilt durch verfügbare Stunden (Wochenstunden minus Abwesenheit).</p></div></section>
+      <section class="abschnitt"><h2>Umsatz je Kunde · Top 5</h2><div class="liste">${kunden.map(([pid, a], i) => `<div class="eintrag"><span class="stopp-nr">${i + 1}</span><span class="wachse">${e(PS.praxis(pid).kurz)}</span><span class="fett zahl">${PS.euro(Math.round(jetzt * a))}</span></div>`).join("")}</div></section>
+      <p class="leise klein">Umsatz: Netto freigegebener Rechnungen nach Rechnungsdatum, abzüglich Stornos und Gutschriften. Alle Zahlen erfunden.</p>`,
+    });
+  }
+  PS.aktionen.zr = (el) => {
+    PS.ansicht().zr = el.dataset.z;
+    PS.render();
+  };
+
+  // ---------- Inhaber: Mehr, Benachrichtigungen (SYS-05) ----------
+  function mehr() {
+    const aus = h().aus || {};
+    const schalter = (k, t) =>
+      `<button class="eintrag" data-a="art" data-k="${k}" role="switch" aria-checked="${aus[k] !== true}"><span class="wachse">${t}</span><span class="pille ${aus[k] !== true ? "z-bezahlt" : "z-entwurf"} ohne-punkt">${aus[k] !== true ? "an" : "aus"}</span></button>`;
+    return schale({
+      titel: "Mehr",
+      rechts: glocke(),
+      inhalt: `
+      <section class="karte innen"><div class="zeile"><span class="stopp-nr" style="width:56px;height:56px">IT</span><div class="stapel"><span class="fett" style="font-size:1.125rem">Ines Testinhaber</span><span class="leise">Inhaberin · Zwei-Faktor-Anmeldung aktiv</span></div></div></section>
+      <section class="abschnitt"><h2>Benachrichtigungen</h2><div class="liste">
+        <button class="eintrag" data-a="geh" data-v="meldungen"><span class="wachse fett">Alle Benachrichtigungen</span>${I("pfeil")}</button>
+        ${schalter("termin", "Termin überfällig")}${schalter("rueckfrage", "Rückfragen")}${schalter("zugewiesen", "Auftrag zugewiesen")}</div></section>
+      <section class="abschnitt"><h2>Am PC</h2><div class="hinweis">${I("info")}<p>Kunden, Kalender, Dokumente, Stammdaten, Mitarbeiter und das Protokoll bearbeitet das Büro am PC. Am Handy steht das Wichtigste für unterwegs.</p></div></section>
+      <div class="abstand-8">
+        ${PS.istInstalliert() ? "" : `<button class="knopf gross voll weich" data-a="installieren">${I("teilen")} Auf den Home-Bildschirm</button>`}
+        <button class="knopf gross voll zweit" data-a="vorfuehren">${I("vorfuehren")} Vorführen</button>
+        <button class="knopf gross voll zweit" data-a="abmelden">${I("abmelden")} Abmelden</button></div>`,
+    });
+  }
+  PS.aktionen.art = (el) => {
+    const a = (h().aus = h().aus || {});
+    a[el.dataset.k] = !a[el.dataset.k];
+    PS.render();
+  };
+  function meldungen() {
+    const liste = PS.z.benachrichtigungen
+      .filter((b) => b.fuer === ich() && artAn(b))
+      .sort((a, b) => b.zeit.localeCompare(a.zeit));
+    return schale({
+      titel: "Benachrichtigungen",
+      zurueck: true,
+      rechts: liste.some((b) => !b.gelesen)
+        ? `<button class="knopf text" data-a="alleGelesen">Alle gelesen</button>`
+        : "",
+      inhalt: liste.length
+        ? `<div class="liste">${liste.map((b) => `<button class="eintrag" data-a="meldungOeffnen" data-id="${b.id}"><span class="ampel ${b.gelesen ? "" : "rot"}" style="width:10px">${b.gelesen ? "" : ""}</span><span class="stapel wachse"><span class="${b.gelesen ? "" : "fett"}">${e(b.text)}</span><span class="leise klein">${PS.datum(new Date(b.zeit))}, ${PS.zeit(b.zeit)} Uhr</span></span>${I("pfeil")}</button>`).join("")}</div>`
+        : `<div class="leer">${I("glocke")}<p>Keine Benachrichtigungen.</p></div>`,
+    });
+  }
+  PS.aktionen.alleGelesen = () => {
+    PS.z.benachrichtigungen.forEach((b) => {
+      if (b.fuer === ich()) b.gelesen = true;
+    });
+    PS.render();
+  };
+  PS.aktionen.meldungOeffnen = (el) => {
+    const b = PS.z.benachrichtigungen.find((x) => x.id === el.dataset.id);
+    b.gelesen = true;
+    if (b.ziel && b.ziel.startsWith("a")) PS.geh("auftrag", { id: b.ziel });
+    else PS.render();
+  };
+
+  // ---------- Modul ----------
+  PS.module.handy = {
+    rahmen: true,
+    render() {
+      if (h().schritt === "anmelden") return anmelden();
+      if (h().schritt === "code") return code();
+      if (!PS.nav.length) PS.nav = [{ name: h().rolle === "fahrer" ? "tour" : "start" }];
+      const v = PS.ansicht();
+      const seiten =
+        h().rolle === "fahrer"
+          ? { tour, woche, tag: tagAnsicht, profil }
+          : {
+              start,
+              auftraege,
+              auftrag: auftragAnsicht,
+              rechnungen,
+              rechnung: rechnungAnsicht,
+              kennzahlen,
+              mehr,
+              meldungen,
+            };
+      const f = seiten[v.name] || seiten[h().rolle === "fahrer" ? "tour" : "start"];
+      return f(v);
+    },
+    vorfuehrExtra() {
+      return h().schritt === "app"
+        ? `<div class="liste"><button class="eintrag" data-a="rolleWechseln"><span class="wachse fett">${h().rolle === "fahrer" ? "Zur Inhaberin wechseln" : "Zum Fahrer wechseln"}</span>${I("pfeil")}</button></div>`
+        : "";
+    },
+  };
+  PS.aktionen.rolleWechseln = () => {
+    h().rolle = h().rolle === "fahrer" ? "inhaber" : "fahrer";
+    PS.nav = [];
+    PS.schliesseBlatt(true);
+    PS.render(true);
+  };
+})();
+
+/* Perfect Smile · Vorschau – iPad am Laborarbeitsplatz (LST-01 bis LST-12, AUF-06). */
+(function () {
+  "use strict";
+  const PS = window.PS;
+  const e = PS.esc;
+  const I = PS.icon;
+  const DEMO_PIN = "123456";
+  const LEERLAUF_MS = 5 * 60 * 1000; // LST-02 Startwert
+  const ip = () => PS.z.ipad;
+  const ich = () => ip().person;
+
+  function meineAuftraege() {
+    return PS.z.auftraege
+      .filter((a) => a.techniker === ich() && PS.OFFEN.includes(a.status))
+      .sort((a, b) => a.termin.localeCompare(b.termin) || a.nr.localeCompare(b.nr));
+  }
+  const timer = () => PS.z.timer[ich()] || null;
+  const nichtGesendet = () => PS.z.erfassungen.filter((x) => !x.gesendet && x.von === ich());
+
+  // ---------- Schale ----------
+  function schale({ titel, unter = "", zurueck = false, inhalt }) {
+    const t = timer();
+    const ng = nichtGesendet().length;
+    return `<div class="schale ipad">
+      <header class="kopf">
+        ${zurueck ? `<button class="knopf zweit" data-a="zurueck" aria-label="Zurück">${I("zurueck")} Zurück</button>` : PS.logoZeichen()}
+        <h1>${e(titel)}${unter ? `<span class="unter">${unter}</span>` : ""}</h1>
+        <div class="ipad-leiste">
+          ${t ? `<button class="timer-chip" data-a="zumTimer" aria-label="Laufender Timer">${"<i></i>"}<span data-seit="${t.start}">0:00:00</span></button>` : ""}
+          ${ng ? `<span class="pille nicht-gesendet">Nicht gesendet (${ng})</span>` : ""}
+          <button class="icon-knopf" data-a="wlan" aria-label="${ip().offline ? "Keine Verbindung" : "Verbunden"}" title="${ip().offline ? "Keine Verbindung" : "WLAN verbunden"}" style="color:${ip().offline ? "var(--gelb)" : "var(--gruen)"}">${I(ip().offline ? "wlanAus" : "wlan")}</button>
+          <button class="knopf zweit" data-a="ipadGeh" data-v="scan" aria-label="Scannen">${I("qr")}<span class="txt"> Scannen</span></button>
+          <button class="knopf zweit" data-a="ipadGeh" data-v="tag" aria-label="Mein Tag">${I("uhr")}<span class="txt"> Mein Tag</span></button>
+          <button class="knopf zweit" data-a="ipadAbmelden" aria-label="Abmelden">${I("abmelden")} ${e(PS.mitarbeiter(ich()).kuerzel)}</button>
+        </div>
+      </header>
+      ${ip().offline ? `<div class="offline-band" role="status">${I("wlanAus")}<span>Keine Verbindung. Leistungen und nachgetragene Zeiten werden auf dem iPad gespeichert und automatisch gesendet, sobald das WLAN wieder da ist.</span></div>` : ""}
+      <main class="inhalt">${inhalt}</main>
+    </div>${leerlaufHinweis()}`;
+  }
+  PS.aktionen.ipadGeh = (el) => {
+    if (PS.ansicht() && PS.ansicht().name === el.dataset.v) return;
+    PS.geh(el.dataset.v);
+  };
+  PS.aktionen.zumTimer = () => {
+    const t = timer();
+    if (t) PS.geh("auftrag", { id: t.auftrag });
+  };
+
+  // ---------- Schnellanmeldung (LST-02) ----------
+  function anmeldung() {
+    const gesperrt = ip().gesperrt;
+    const techs = Object.values(PS.z.mitarbeiter).filter((m) => m.rollen.includes("techniker"));
+    const kopf = `<header class="kopf">${PS.logoZeichen()}<h1>Perfect Smile<span class="unter">Labor-iPad · Arbeitsplatz 2</span></h1>
+      <span class="pille z-bezahlt">Gerät freigegeben</span><button class="icon-knopf" data-a="vorfuehren" aria-label="Vorführen">${I("vorfuehren")}</button></header>`;
+    if (!ip().wahl) {
+      return `<div class="schale ipad">${kopf}<main class="inhalt">
+        <h2 style="font-size:1.75rem">Wer arbeitet hier?</h2>
+        <div class="personen">${techs.map((m) => `<button class="person" data-a="personWahl" data-k="${m.kuerzel}" ${gesperrt[m.kuerzel] ? "disabled" : ""}><span class="kuerzel">${m.kuerzel}</span><span>${e(m.name)}</span><span class="leise klein">${gesperrt[m.kuerzel] ? "gesperrt" : `${meineAnzahl(m.kuerzel)} offene Aufträge`}</span></button>`).join("")}</div>
+        <p class="leise">Die Schnellanmeldung mit PIN geht nur auf iPads, die der Administrator freigegeben hat. Nach 5 Minuten ohne Eingabe meldet das iPad ab.</p>
+      </main></div>`;
+    }
+    const m = PS.mitarbeiter(ip().wahl);
+    const pin = ip().pin || "";
+    const fehl = ip().fehlversuche[m.kuerzel] || 0;
+    return `<div class="schale ipad">${kopf}<main class="inhalt" style="align-items:center;justify-content:center">
+      <div class="abstand-8" style="align-items:center;gap:18px;max-width:420px;width:100%">
+        <span class="person" style="all:unset;display:grid;place-items:center"><span class="kuerzel" style="width:72px;height:72px;border-radius:50%;background:var(--akzent-weich);color:var(--akzent-tief);display:grid;place-items:center;font-weight:750;font-size:1.5rem">${m.kuerzel}</span></span>
+        <h2 style="font-size:1.5rem">${e(m.name)} · PIN eingeben</h2>
+        <div class="pin-punkte ${ip().wackeln ? "wackeln" : ""}" aria-label="${pin.length} von 6 Ziffern">${[0, 1, 2, 3, 4, 5].map((i) => `<i class="${i < pin.length ? "voll" : ""}"></i>`).join("")}</div>
+        ${fehl ? `<p class="fehler" role="alert">PIN falsch. Noch ${5 - fehl} ${5 - fehl === 1 ? "Versuch" : "Versuche"}, dann ist die Schnellanmeldung gesperrt.</p>` : `<p class="leise">Demo-PIN: 1 2 3 4 5 6</p>`}
+        <div class="ziffern">${["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((z) => `<button class="ziffer" data-a="pinTaste" data-z="${z}">${z}</button>`).join("")}
+          <button class="ziffer leise-taste" data-a="pinTaste" data-z="weg">Löschen</button><button class="ziffer" data-a="pinTaste" data-z="0">0</button><button class="ziffer leise-taste" data-a="pinTaste" data-z="zurueck" aria-label="Letzte Ziffer löschen">${I("zurueck")}</button></div>
+        <button class="knopf text" data-a="personZurueck">Andere Person</button>
+      </div></main></div>`;
+  }
+  function meineAnzahl(k) {
+    return PS.z.auftraege.filter((a) => a.techniker === k && PS.OFFEN.includes(a.status)).length;
+  }
+  PS.aktionen.personWahl = (el) => {
+    ip().wahl = el.dataset.k;
+    ip().pin = "";
+    PS.render();
+  };
+  PS.aktionen.personZurueck = () => {
+    ip().wahl = null;
+    ip().pin = "";
+    PS.render();
+  };
+  PS.aktionen.pinTaste = (el) => {
+    const z = el.dataset.z;
+    let p = ip().pin || "";
+    ip().wackeln = false;
+    if (z === "weg") p = "";
+    else if (z === "zurueck") p = p.slice(0, -1);
+    else if (p.length < 6) p += z;
+    ip().pin = p;
+    if (p.length === 6) {
+      const k = ip().wahl;
+      if (p === DEMO_PIN) {
+        ip().fehlversuche[k] = 0;
+        ip().person = k;
+        ip().wahl = null;
+        ip().pin = "";
+        ip().letzteAktivitaet = Date.now();
+        PS.nav = [{ name: "auftraege" }];
+        PS.render(true);
+        PS.meldung(`Angemeldet: ${PS.mitarbeiter(k).name}`);
+        planeLiveZuweisung();
+        return;
+      }
+      ip().fehlversuche[k] = (ip().fehlversuche[k] || 0) + 1;
+      ip().pin = "";
+      ip().wackeln = true;
+      if (ip().fehlversuche[k] >= 5) {
+        ip().gesperrt[k] = true;
+        ip().wahl = null;
+        PS.render();
+        PS.meldung(
+          "Schnellanmeldung gesperrt. Entsperren kann die Inhaberin oder der Administrator.",
+          "warn",
+        );
+        return;
+      }
+    }
+    PS.render();
+  };
+  PS.aktionen.ipadAbmelden = () => {
+    ip().person = null;
+    PS.nav = [];
+    PS.render(true);
+    PS.meldung("Abgemeldet");
+  };
+
+  // ---------- Leerlauf: Abmeldung nach 5 Minuten (LST-02) ----------
+  ["pointerdown", "keydown"].forEach((ev) =>
+    document.addEventListener(
+      ev,
+      () => {
+        if (PS.z && PS.z.ipad) PS.z.ipad.letzteAktivitaet = Date.now();
+      },
+      { capture: true },
+    ),
+  );
+  function restMs() {
+    return LEERLAUF_MS - (Date.now() - ip().letzteAktivitaet);
+  }
+  function leerlaufHinweis() {
+    const r = restMs();
+    if (r > 30000) return "";
+    return `<div class="leerlauf" data-a="bleiben"><div class="karte"><h2>Gleich abgemeldet</h2><p>Nach 5 Minuten ohne Eingabe meldet das iPad ab, damit niemand unter Ihrem Namen erfasst.</p><p class="zahl" style="font-size:2.5rem;font-weight:750" id="restZeit">0:${String(Math.max(0, Math.ceil(r / 1000))).padStart(2, "0")}</p><button class="knopf gross voll" data-a="bleiben">Angemeldet bleiben</button></div></div>`;
+  }
+  PS.aktionen.bleiben = () => {
+    ip().letzteAktivitaet = Date.now();
+    PS.render();
+  };
+
+  // ---------- Live-Zuweisung (AUF-06: erscheint ohne Neuladen) ----------
+  let liveUhr = 0;
+  function planeLiveZuweisung() {
+    if (ip().liveGezeigt || ich() !== "TT") return;
+    clearTimeout(liveUhr);
+    liveUhr = setTimeout(() => {
+      if (ich() === "TT" && !ip().liveGezeigt) liveZuweisen();
+    }, 25000);
+  }
+  function liveZuweisen() {
+    const a = PS.z.auftraege.find((x) => x.status === "angenommen");
+    if (!a) {
+      PS.meldung("Kein freier Auftrag mehr zum Zuweisen", "info");
+      return;
+    }
+    ip().liveGezeigt = true;
+    a.techniker = ich() || "TT";
+    PS.setzeStatus(a, "zugewiesen", "VT");
+    ip().neu = a.id;
+    PS.z.benachrichtigungen.push({
+      id: PS.id("b"),
+      fuer: a.techniker,
+      text: `Auftrag ${a.nr} wurde Ihnen zugewiesen`,
+      zeit: new Date().toISOString(),
+      gelesen: false,
+      ziel: a.id,
+    });
+    PS.render();
+    PS.meldung(`Neu zugewiesen: ${a.nr} · ${a.arbeitsart} (${PS.praxis(a.praxis).kurz})`, "info");
+  }
+  PS.aktionen.liveZuweisen = () => {
+    PS.schliesseBlatt(true);
+    if (!ich()) {
+      PS.meldung("Bitte zuerst am iPad anmelden", "info");
+      return;
+    }
+    liveZuweisen();
+  };
+
+  // ---------- Meine Aufträge (LST-03) ----------
+  function auftraege(v) {
+    const q = (v.q || "").trim().toLowerCase();
+    const liste = meineAuftraege().filter(
+      (a) => !q || a.nr.includes(q) || PS.praxis(a.praxis).name.toLowerCase().includes(q),
+    );
+    const neu = ip().neu;
+    return schale({
+      titel: "Meine Aufträge",
+      unter: `${e(PS.mitarbeiter(ich()).name)} · nach Liefertermin`,
+      inhalt: `<div class="zeile" style="gap:12px;flex-wrap:wrap">
+          <div class="feld wachse" style="min-width:240px"><label class="vh" for="ipadSuche">Auftrag suchen</label><input class="eingabe" id="ipadSuche" type="search" inputmode="search" placeholder="Auftragsnummer oder Praxis suchen" data-eingabe="ipadSuche" value="${e(v.q || "")}" autocomplete="off"></div>
+          <button class="knopf gross" data-a="ipadGeh" data-v="scan">${I("qr")} Laufzettel scannen</button></div>
+        <div class="karte" style="overflow:hidden" id="ipadListe">${tabelle(liste, neu)}</div>
+        <p class="leise">Neu zugewiesene Aufträge erscheinen hier von selbst, ohne Neuladen. <span class="ampel rot">überfällig</span> &nbsp; <span class="ampel gelb">heute fällig</span></p>`,
+    });
+  }
+  function tabelle(liste, neu) {
+    if (!liste.length)
+      return `<div class="leer">${I("kreischeck")}<p>Keine offenen Aufträge.</p></div>`;
+    return `<div style="overflow-x:auto"><table class="auftrag-tabelle"><thead><tr><th>Termin</th><th>Auftrag</th><th>Praxis</th><th>Arbeitsart</th><th>Status</th></tr></thead><tbody>
+      ${liste
+        .map((a) => {
+          const amp = PS.ampel(a);
+          const knopf = (inhalt) =>
+            `<button data-a="auftragOeffnen" data-id="${a.id}">${inhalt}</button>`;
+          return `<tr class="${amp} ${a.id === neu ? "neu" : ""}"><td>${knopf(PS.terminText(a))}</td><td>${knopf(`<span class="fett nr">${a.nr}</span>${a.id === neu ? ' <span class="pille z-offen ohne-punkt">neu</span>' : ""}`)}</td><td>${knopf(e(PS.praxis(a.praxis).kurz))}</td><td>${knopf(e(a.arbeitsart))}</td><td>${knopf(PS.statusPille(a.status))}</td></tr>`;
+        })
+        .join("")}
+    </tbody></table></div>`;
+  }
+  PS.aktionen.ipadSuche = (el) => {
+    const v = PS.ansicht();
+    v.q = el.value;
+    const q = v.q.trim().toLowerCase();
+    document.getElementById("ipadListe").innerHTML = tabelle(
+      meineAuftraege().filter(
+        (a) => !q || a.nr.includes(q) || PS.praxis(a.praxis).name.toLowerCase().includes(q),
+      ),
+      null,
+    );
+  };
+  PS.aktionen.auftragOeffnen = (el) => {
+    if (ip().neu === el.dataset.id) ip().neu = null;
+    PS.geh("auftrag", { id: el.dataset.id });
+  };
+
+  // ---------- Auftrag am iPad ----------
+  function eintragText(x) {
+    if (x.art === "zeit") return `${PS.dauer(x.minuten)} Arbeitszeit`;
+    if (x.art === "leistung") return `${x.menge} × ${e(PS.leistung(x.nr).bezeichnung)}`;
+    return `Material: ${e((PS.z.material.find((m) => m.id === x.material) || {}).name || "")}${x.charge ? ` · Charge ${e(x.charge)}` : ""}`;
+  }
+  function eintragZeile(x, a) {
+    const pos = a.positionen.findIndex((p) => p.id === x.position) + 1;
+    const aenderbar =
+      x.von === ich() && x.tag === PS.heute() && !x.abgerechnet && x.art !== "material";
+    const marken = [
+      x.nachtraeglich ? '<span class="pille z-entwurf ohne-punkt">nachträglich erfasst</span>' : "",
+      !x.gesendet ? '<span class="pille nicht-gesendet ohne-punkt">nicht gesendet</span>' : "",
+      x.pruefen
+        ? '<span class="pille z-ueberfaellig ohne-punkt">zur Prüfung (über 10 h)</span>'
+        : "",
+      x.geaendert ? '<span class="pille z-offen ohne-punkt">geändert</span>' : "",
+    ].join(" ");
+    return `<div class="eintrag" style="align-items:flex-start">
+      <span class="stopp-nr" style="width:40px;height:40px">${I(x.art === "zeit" ? "uhr" : x.art === "leistung" ? "check" : "material")}</span>
+      <span class="stapel wachse"><span class="fett">${eintragText(x)}</span>
+        <span class="leise klein">Position ${pos} · ${PS.tagName(x.tag)}, ${PS.zeit(x.zeit)} Uhr · ${e(x.von)}${x.art === "leistung" ? ` · ${PS.euro(x.menge * x.preis)}` : ""}</span>
+        ${marken.trim() ? `<span class="umbruch">${marken}</span>` : ""}</span>
+      ${aenderbar ? `<button class="knopf text" data-a="aendern" data-id="${x.id}">${I("stift")} Ändern</button>` : x.von === ich() && x.art !== "material" ? `<span class="leise" title="Ändern nur durch die Verwaltung mit Begründung" aria-label="gesperrt">${I("schloss").replace("<svg", '<svg style="width:22px;height:22px"')}</span>` : ""}
+    </div>`;
+  }
+  function auftragAnsicht(v) {
+    const a = PS.auftrag(v.id);
+    if (!a || a.techniker !== ich()) {
+      return schale({
+        titel: "Kein Zugriff",
+        zurueck: true,
+        inhalt: `<div class="hinweis rot">${I("schloss")}<p>Zugriff verweigert. Dieser Auftrag ist Ihnen nicht zugewiesen.</p></div>`,
+      });
+    }
+    const p = PS.praxis(a.praxis);
+    const t = timer();
+    const erf = PS.z.erfassungen
+      .filter((x) => x.auftrag === a.id)
+      .sort((x, y) => y.zeit.localeCompare(x.zeit));
+    const wechsel = PS.wechselFuer(a, "techniker", true);
+    const posKarte = (x, i) => {
+      const l = PS.leistung(x.nr);
+      const hier = t && t.position === x.id;
+      const ez = erf.filter((y) => y.position === x.id);
+      const min = ez.filter((y) => y.art === "zeit").reduce((s, y) => s + y.minuten, 0);
+      const nl = ez.filter((y) => y.art === "leistung").reduce((s, y) => s + y.menge, 0);
+      return `<article class="karte position">
+        <div class="zeile oben"><div class="stapel wachse"><h3>${i + 1}. ${e(l.bezeichnung)}</h3>
+          <span class="leise">${[`Menge ${x.menge}`, x.zaehne.length ? `Zähne ${x.zaehne.join(", ")}` : "", x.farbe ? `Farbe ${x.farbe}` : ""].filter(Boolean).join(" · ")}</span></div>
+          <span class="leise klein zahl" style="text-align:right">${min ? PS.dauer(min) : "0 min"}<br>${nl} erfasst</span></div>
+        ${hier ? `<div class="timer-laeuft"><i></i><span>läuft</span><span data-seit="${t.start}">0:00:00</span></div>` : ""}
+        <div class="knoepfe">
+          ${hier ? `<button class="knopf gefahr" data-a="timerStop">${I("stop")} Timer stoppen</button>` : `<button class="knopf gruen" data-a="timerStart" data-auftrag="${a.id}" data-pos="${x.id}">${I("play")} Timer starten</button>`}
+          <button class="knopf" data-a="leistungNeu" data-auftrag="${a.id}" data-pos="${x.id}">${I("plus")} Leistung</button>
+        </div></article>`;
+    };
+    return schale({
+      titel: `Auftrag ${a.nr}`,
+      unter: `${e(p.kurz)} · ${e(a.arbeitsart)}`,
+      zurueck: true,
+      inhalt: `<section class="karte innen"><div class="zeile" style="flex-wrap:wrap;gap:10px 22px">
+          <span class="stapel"><span class="leise klein">Praxis</span><span class="fett">${e(p.name)}</span></span>
+          <span class="stapel"><span class="leise klein">Behandler</span><span class="fett">${e(a.behandler)}</span></span>
+          <span class="stapel"><span class="leise klein">Patient</span><span class="fett">${e(a.patient)}</span></span>
+          <span class="stapel"><span class="leise klein">Termin</span>${PS.terminText(a)}</span>
+          <span class="stapel"><span class="leise klein">Status</span><span data-testid="status">${PS.statusPille(a.status)}</span></span></div></section>
+        <div class="ipad-raster">
+          <div class="abstand-8" style="gap:16px">${a.positionen.map(posKarte).join("")}
+            <div class="zeile" style="gap:10px;flex-wrap:wrap"><button class="knopf zweit gross" data-a="zeitNachtragen" data-auftrag="${a.id}">${I("uhr")} Zeit nachtragen</button><button class="knopf zweit gross" data-a="materialNeu" data-auftrag="${a.id}">${I("material")} Material und Charge</button></div>
+          </div>
+          <div class="abstand-8" style="gap:16px">
+            <section class="karte innen"><p class="ueberschrift">Status ändern</p>
+              ${wechsel.length ? wechsel.map((w, i) => `<button class="knopf gross voll ${w.zweit ? "zweit" : w.nach === "qualitaetskontrolle" ? "gruen" : ""}" data-a="ipadWechsel" data-id="${a.id}" data-i="${i}">${e(w.text)}</button>`).join("") : `<p class="leise">Kein Statuswechsel am iPad möglich.</p>`}
+              <p class="leise klein">Nur Wechsel, die für Techniker erlaubt sind.</p></section>
+            <section class="abschnitt"><h2>Erfasst <span class="leise klein" style="text-transform:none;letter-spacing:0">${PS.mehrzahl(erf.length, "Eintrag", "Einträge")}</span></h2>
+              ${erf.length ? `<div class="liste">${erf.map((x) => eintragZeile(x, a)).join("")}</div>` : `<p class="leise">Noch nichts erfasst.</p>`}
+              <p class="leise klein">Eigene Einträge lassen sich am selben Tag ändern. Später ändert nur die Verwaltung, mit Begründung.</p></section>
+          </div>
+        </div>`,
+    });
+  }
+
+  // ---------- Timer (LST-05) ----------
+  function brauchtNetz() {
+    if (!ip().offline) return false;
+    PS.meldung("Der Timer braucht WLAN. Ohne Verbindung: „Zeit nachtragen“ nutzen.", "warn");
+    return true;
+  }
+  PS.aktionen.timerStart = (el) => {
+    if (brauchtNetz()) return;
+    const neu = {
+      auftrag: el.dataset.auftrag,
+      position: el.dataset.pos,
+      start: new Date().toISOString(),
+    };
+    const t = timer();
+    if (t) {
+      const alt = PS.auftrag(t.auftrag);
+      const pos = alt.positionen.findIndex((p) => p.id === t.position) + 1;
+      PS._neuerTimer = neu;
+      PS.frage({
+        titel: "Es läuft schon ein Timer",
+        text: `Auftrag ${alt.nr}, Position ${pos}. Je Techniker läuft nur ein Timer. Den ersten beenden und hier neu starten?`,
+        ja: "Ersten beenden und hier starten",
+        beiJa: () => {
+          stoppeTimer();
+          starteTimer(PS._neuerTimer);
+        },
+      });
+      return;
+    }
+    starteTimer(neu);
+  };
+  function starteTimer(neu) {
+    PS.z.timer[ich()] = neu;
+    const a = PS.auftrag(neu.auftrag);
+    if (a.status === "zugewiesen") {
+      PS.setzeStatus(a, "in_fertigung", ich());
+      PS.meldung(`Timer läuft · ${a.nr} ist jetzt „In Fertigung“`);
+    } else PS.meldung("Timer läuft");
+    PS.render();
+  }
+  function stoppeTimer() {
+    const t = timer();
+    if (!t) return 0;
+    const sek = Math.floor((Date.now() - Date.parse(t.start)) / 1000);
+    const min = Math.max(1, Math.round(sek / 60));
+    PS.z.erfassungen.push({
+      id: PS.id("e"),
+      auftrag: t.auftrag,
+      position: t.position,
+      art: "zeit",
+      minuten: min,
+      von: ich(),
+      tag: PS.heute(),
+      zeit: new Date().toISOString(),
+      nachtraeglich: false,
+      gesendet: true,
+      pruefen: min > 600,
+      abgerechnet: false,
+    });
+    delete PS.z.timer[ich()];
+    return min;
+  }
+  PS.aktionen.timerStop = () => {
+    if (brauchtNetz()) return;
+    const m = stoppeTimer();
+    PS.render();
+    PS.meldung(`${PS.dauer(m)} erfasst`);
+  };
+
+  // ---------- Leistung erfassen (LST-07, NFR-02: höchstens 4 Berührungen) ----------
+  PS.aktionen.leistungNeu = (el) => {
+    const a = PS.auftrag(el.dataset.auftrag);
+    const pos = a.positionen.find((p) => p.id === el.dataset.pos);
+    PS._erf = { auftrag: a.id, position: pos.id, nr: pos.nr, menge: 1, alle: false };
+    PS.blatt(leistungBlatt(), { titel: "Leistung erfassen" });
+  };
+  function leistungBlatt() {
+    const s = PS._erf;
+    const a = PS.auftrag(s.auftrag);
+    const vorschlag = [...new Set(a.positionen.map((p) => p.nr))];
+    const nrn = s.alle ? Object.keys(PS.z.katalog) : vorschlag;
+    const preis = PS.preisFuer(a.praxis, s.nr);
+    const l = PS.leistung(s.nr);
+    return `<h2>Leistung erfassen</h2>
+      <div class="auswahl-gitter">${nrn.map((nr) => `<button class="auswahl" data-a="erfWahl" data-nr="${nr}" aria-pressed="${nr === s.nr}"><span>${e(PS.leistung(nr).bezeichnung)}</span><span class="leise">${nr}</span></button>`).join("")}</div>
+      ${s.alle ? "" : `<button class="knopf text" data-a="erfAlle">Andere Leistung aus dem Katalog …</button>`}
+      <div class="feld"><span class="label">Menge (${e(l.einheit)})</span><div class="stepper"><button data-a="erfMenge" data-d="-1" aria-label="Weniger">−</button><output aria-live="polite">${s.menge}</output><button data-a="erfMenge" data-d="1" aria-label="Mehr">+</button></div></div>
+      <div class="hinweis">${I("schloss")}<p>Preis aus der Preisliste der Praxis: <b class="zahl">${PS.euro(preis)}</b> je ${e(l.einheit)}. Der Preis lässt sich hier nicht ändern.</p></div>
+      ${ip().offline ? `<div class="hinweis gelb">${I("wlanAus")}<p>Ohne WLAN: Der Eintrag wird auf dem iPad gespeichert und später gesendet.</p></div>` : ""}
+      <div class="knoepfe"><button class="knopf gross" data-a="erfSpeichern">Speichern</button><button class="knopf gross zweit" data-a="blattZu">Abbrechen</button></div>`;
+  }
+  function blattNeu(html) {
+    const b = document.querySelector("#ebene .blatt");
+    if (b) b.innerHTML = `<div class="blatt-griff"></div>${html}`;
+  }
+  PS.aktionen.erfWahl = (el) => {
+    PS._erf.nr = el.dataset.nr;
+    blattNeu(leistungBlatt());
+  };
+  PS.aktionen.erfAlle = () => {
+    PS._erf.alle = true;
+    blattNeu(leistungBlatt());
+  };
+  PS.aktionen.erfMenge = (el) => {
+    PS._erf.menge = Math.max(1, Math.min(99, PS._erf.menge + Number(el.dataset.d)));
+    blattNeu(leistungBlatt());
+  };
+  PS.aktionen.erfSpeichern = () => {
+    const s = PS._erf;
+    const a = PS.auftrag(s.auftrag);
+    const x = {
+      id: PS.id("e"),
+      auftrag: a.id,
+      position: s.position,
+      art: "leistung",
+      nr: s.nr,
+      menge: s.menge,
+      preis: PS.preisFuer(a.praxis, s.nr),
+      steuer: PS.leistung(s.nr).steuer,
+      von: ich(),
+      tag: PS.heute(),
+      zeit: new Date().toISOString(),
+      nachtraeglich: false,
+      gesendet: !ip().offline,
+      pruefen: false,
+      abgerechnet: false,
+    };
+    PS.z.erfassungen.push(x);
+    PS.schliesseBlatt();
+    PS.render();
+    PS.meldung(
+      ip().offline
+        ? "Gespeichert auf dem iPad · wird gesendet, sobald WLAN da ist"
+        : `Erfasst: ${s.menge} × ${PS.leistung(s.nr).bezeichnung}`,
+      ip().offline ? "info" : "ok",
+    );
+  };
+
+  // ---------- Zeit nachtragen (LST-06) ----------
+  PS.aktionen.zeitNachtragen = (el) => {
+    const a = PS.auftrag(el.dataset.auftrag);
+    PS._nach = { auftrag: a.id, position: a.positionen[0].id, tag: PS.heute(), minuten: 30 };
+    PS.blatt(nachBlatt(), { titel: "Zeit nachtragen" });
+  };
+  function nachBlatt() {
+    const s = PS._nach;
+    const a = PS.auftrag(s.auftrag);
+    const tage = [0, -1, -2].map((n) => (n === 0 ? PS.heute() : PS.plusArbeitstage(PS.heute(), n)));
+    return `<h2>Zeit nachtragen</h2>
+      <div class="feld"><span class="label">Position</span><div class="auswahl-gitter">${a.positionen.map((p, i) => `<button class="auswahl" data-a="nachPos" data-id="${p.id}" aria-pressed="${p.id === s.position}"><span>${i + 1}. ${e(PS.leistung(p.nr).bezeichnung)}</span></button>`).join("")}</div></div>
+      <div class="feld"><span class="label">Datum</span><div class="chips">${tage.map((t) => `<button class="chip" data-a="nachTag" data-t="${t}" aria-pressed="${t === s.tag}">${PS.tagName(t)} · ${PS.datumKurz(t)}</button>`).join("")}</div></div>
+      <div class="feld"><span class="label">Dauer</span><div class="stepper"><button data-a="nachMin" data-d="-15" aria-label="15 Minuten weniger">−</button><output aria-live="polite" style="font-size:1.75rem">${PS.dauer(s.minuten)}</output><button data-a="nachMin" data-d="15" aria-label="15 Minuten mehr">+</button></div></div>
+      <p class="leise">Der Eintrag wird als „nachträglich erfasst“ gekennzeichnet.</p>
+      <div class="knoepfe"><button class="knopf gross" data-a="nachSpeichern">Speichern</button><button class="knopf gross zweit" data-a="blattZu">Abbrechen</button></div>`;
+  }
+  PS.aktionen.nachPos = (el) => {
+    PS._nach.position = el.dataset.id;
+    blattNeu(nachBlatt());
+  };
+  PS.aktionen.nachTag = (el) => {
+    PS._nach.tag = el.dataset.t;
+    blattNeu(nachBlatt());
+  };
+  PS.aktionen.nachMin = (el) => {
+    PS._nach.minuten = Math.max(15, Math.min(600, PS._nach.minuten + Number(el.dataset.d)));
+    blattNeu(nachBlatt());
+  };
+  PS.aktionen.nachSpeichern = () => {
+    const s = PS._nach;
+    PS.z.erfassungen.push({
+      id: PS.id("e"),
+      auftrag: s.auftrag,
+      position: s.position,
+      art: "zeit",
+      minuten: s.minuten,
+      von: ich(),
+      tag: s.tag,
+      zeit:
+        s.tag === PS.heute()
+          ? new Date().toISOString()
+          : new Date(`${s.tag}T16:00:00`).toISOString(),
+      nachtraeglich: true,
+      gesendet: !ip().offline,
+      pruefen: false,
+      abgerechnet: false,
+    });
+    PS.schliesseBlatt();
+    PS.render();
+    PS.meldung(
+      ip().offline
+        ? "Gespeichert auf dem iPad · wird gesendet, sobald WLAN da ist"
+        : `${PS.dauer(s.minuten)} nachgetragen`,
+      ip().offline ? "info" : "ok",
+    );
+  };
+
+  // ---------- Material und Charge (LST-08) ----------
+  PS.aktionen.materialNeu = (el) => {
+    const a = PS.auftrag(el.dataset.auftrag);
+    PS._mat = { auftrag: a.id, position: a.positionen[0].id, material: PS.z.material[0].id };
+    PS.blatt(matBlatt(), { titel: "Material" });
+  };
+  function matBlatt() {
+    const s = PS._mat;
+    const a = PS.auftrag(s.auftrag);
+    return `<h2>Material und Charge</h2>
+      <div class="feld"><span class="label">Position</span><div class="chips">${a.positionen.map((p, i) => `<button class="chip" data-a="matPos" data-id="${p.id}" aria-pressed="${p.id === s.position}">${i + 1}. ${e(PS.leistung(p.nr).bezeichnung)}</button>`).join("")}</div></div>
+      <div class="feld"><span class="label">Material</span><div class="auswahl-gitter">${PS.z.material.map((m) => `<button class="auswahl" data-a="matWahl" data-id="${m.id}" aria-pressed="${m.id === s.material}"><span>${e(m.name)}</span><span class="leise">${e(m.hersteller)}</span></button>`).join("")}</div></div>
+      <div class="feld"><label for="charge">Chargennummer</label><input class="eingabe" id="charge" placeholder="z. B. 2026-118" autocomplete="off" value="${e(s.charge || "")}"></div>
+      <div class="knoepfe"><button class="knopf gross" data-a="matSpeichern">Speichern</button><button class="knopf gross zweit" data-a="blattZu">Abbrechen</button></div>`;
+  }
+  function chargeMerken() {
+    const c = document.getElementById("charge");
+    if (c) PS._mat.charge = c.value;
+  }
+  PS.aktionen.matPos = (el) => {
+    chargeMerken();
+    PS._mat.position = el.dataset.id;
+    blattNeu(matBlatt());
+  };
+  PS.aktionen.matWahl = (el) => {
+    chargeMerken();
+    PS._mat.material = el.dataset.id;
+    blattNeu(matBlatt());
+  };
+  PS.aktionen.matSpeichern = () => {
+    chargeMerken();
+    const s = PS._mat;
+    PS.z.erfassungen.push({
+      id: PS.id("e"),
+      auftrag: s.auftrag,
+      position: s.position,
+      art: "material",
+      material: s.material,
+      charge: (s.charge || "").trim(),
+      von: ich(),
+      tag: PS.heute(),
+      zeit: new Date().toISOString(),
+      nachtraeglich: false,
+      gesendet: !ip().offline,
+      pruefen: false,
+      abgerechnet: false,
+    });
+    PS.schliesseBlatt();
+    PS.render();
+    PS.meldung("Material erfasst", ip().offline ? "info" : "ok");
+  };
+
+  // ---------- Eigene Einträge am selben Tag ändern (LST-10) ----------
+  PS.aktionen.aendern = (el) => {
+    const x = PS.z.erfassungen.find((y) => y.id === el.dataset.id);
+    PS._aend = { id: x.id, wert: x.art === "zeit" ? x.minuten : x.menge };
+    PS.blatt(aendBlatt(), { titel: "Eintrag ändern" });
+  };
+  function aendBlatt() {
+    const s = PS._aend;
+    const x = PS.z.erfassungen.find((y) => y.id === s.id);
+    const zeit = x.art === "zeit";
+    return `<h2>Eintrag ändern</h2><p class="leise">Heute erfasst, deshalb dürfen Sie selbst ändern. Alter und neuer Wert stehen im Protokoll.</p>
+      <div class="stepper"><button data-a="aendWert" data-d="${zeit ? -5 : -1}" aria-label="Weniger">−</button><output style="font-size:1.75rem">${zeit ? PS.dauer(s.wert) : s.wert}</output><button data-a="aendWert" data-d="${zeit ? 5 : 1}" aria-label="Mehr">+</button></div>
+      <div class="knoepfe"><button class="knopf gross" data-a="aendSpeichern">Speichern</button><button class="knopf gross zweit" data-a="blattZu">Abbrechen</button></div>`;
+  }
+  PS.aktionen.aendWert = (el) => {
+    PS._aend.wert = Math.max(1, PS._aend.wert + Number(el.dataset.d));
+    blattNeu(aendBlatt());
+  };
+  PS.aktionen.aendSpeichern = () => {
+    const x = PS.z.erfassungen.find((y) => y.id === PS._aend.id);
+    if (x.art === "zeit") x.minuten = PS._aend.wert;
+    else x.menge = PS._aend.wert;
+    x.geaendert = true;
+    x.gesendet = x.gesendet && !ip().offline;
+    PS.schliesseBlatt();
+    PS.render();
+    PS.meldung("Geändert · im Protokoll vermerkt");
+  };
+
+  // ---------- Statuswechsel am iPad (LST-09) ----------
+  PS.aktionen.ipadWechsel = (el) => {
+    const a = PS.auftrag(el.dataset.id);
+    const w = PS.wechselFuer(a, "techniker", true)[Number(el.dataset.i)];
+    if (ip().offline) {
+      PS.meldung("Statuswechsel braucht WLAN. Bitte die Verbindung prüfen.", "warn");
+      return;
+    }
+    if (
+      w.bedingung === "erfassung" &&
+      !PS.z.erfassungen.some(
+        (x) => x.auftrag === a.id && (x.art === "zeit" || x.art === "leistung"),
+      )
+    ) {
+      PS.meldung("Bitte zuerst eine Zeit oder Leistung erfassen.", "warn");
+      return;
+    }
+    if (w.notiz) {
+      PS._wechsel = { a: a.id, w };
+      PS.blatt(
+        `<h2>${e(w.text)}</h2><form class="abstand-8" data-senden="ipadWechselNotiz" novalidate>
+        <div class="feld"><label for="notiz">${e(w.notiz)}</label><textarea class="eingabe" id="notiz" name="notiz" autofocus placeholder="z. B. Farbe im Rezept fehlt"></textarea></div>
+        <p class="fehler" id="notizFehler" role="alert" hidden>Bitte eine Notiz eingeben. Ohne Notiz lässt sich die Rückfrage nicht setzen.</p>
+        <div class="knoepfe"><button class="knopf gross" type="submit">Rückfrage stellen</button><button class="knopf gross zweit" type="button" data-a="blattZu">Abbrechen</button></div></form>`,
+        { titel: w.text },
+      );
+      return;
+    }
+    PS.frage({
+      titel: `${w.text}?`,
+      text:
+        w.nach === "qualitaetskontrolle"
+          ? "Der Auftrag geht an die Qualitätskontrolle. Laufende Timer bitte vorher stoppen."
+          : "",
+      ja: "Ja",
+      beiJa: () => {
+        const t = timer();
+        if (t && t.auftrag === a.id) stoppeTimer();
+        PS.setzeStatus(a, w.nach, ich());
+        PS.render();
+        PS.meldung(
+          w.nach === "qualitaetskontrolle"
+            ? `${a.nr} an die Qualitätskontrolle gemeldet`
+            : `${a.nr}: ${PS.STATUS[w.nach]}`,
+        );
+        if (w.nach === "qualitaetskontrolle") {
+          PS.nav = [{ name: "auftraege" }];
+          PS.render(true);
+        }
+      },
+    });
+  };
+  PS.aktionen.ipadWechselNotiz = (form, d) => {
+    const text = String(d.get("notiz") || "").trim();
+    if (!text) {
+      form.querySelector("#notizFehler").hidden = false;
+      return;
+    }
+    const { a: id, w } = PS._wechsel;
+    const a = PS.auftrag(id);
+    PS.setzeStatus(a, w.nach, ich(), text);
+    PS.schliesseBlatt();
+    PS.nav = [{ name: "auftraege" }];
+    PS.render(true);
+    PS.meldung(`Rückfrage zu ${a.nr} gestellt · die Annahme meldet sich bei der Praxis`);
+  };
+
+  // ---------- QR-Scan (LST-04) ----------
+  let strom = null,
+    erkennung = 0;
+  function qrBild(text) {
+    // Dekoratives Muster (kein echter QR-Code), aus der Auftragsnummer abgeleitet
+    let h = 0;
+    for (const c of text) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    const n = 11;
+    let r = "";
+    for (let y = 0; y < n; y++)
+      for (let x = 0; x < n; x++) {
+        const ecke = (x < 3 && y < 3) || (x > 7 && y < 3) || (x < 3 && y > 7);
+        h = (h * 1103515245 + 12345) >>> 0;
+        if (
+          ecke
+            ? !(x % 2 === 1 && y % 2 === 1 && (x === 1 || x === 9) && (y === 1 || y === 9))
+            : h % 3 === 0
+        )
+          r += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+      }
+    return `<svg viewBox="0 0 ${n} ${n}" fill="#0e1a27" aria-hidden="true">${r}</svg>`;
+  }
+  function scan() {
+    const liste = meineAuftraege();
+    return schale({
+      titel: "Laufzettel scannen",
+      unter: "QR-Code auf dem Laufzettel vor die Kamera halten",
+      zurueck: true,
+      inhalt: `<div class="ipad-raster">
+        <div class="scanner" id="scanner"><video id="kamera" playsinline muted hidden></video><div class="rahmen"><div class="linie"></div></div><p class="text" id="scanText">Kamera wird gestartet …</p></div>
+        <div class="abstand-8" style="gap:16px">
+          <section class="abschnitt"><h2>Zum Ausprobieren: Laufzettel antippen</h2>
+            <div class="liste">${liste.map((a) => `<button class="eintrag laufzettel" data-a="scanTreffer" data-nr="${a.nr}"><span class="qr">${qrBild(a.nr)}</span><span class="stapel wachse"><span class="fett nr">${a.nr}</span><span class="leise">${e(PS.praxis(a.praxis).kurz)} · ${e(a.arbeitsart)}</span></span>${I("pfeil")}</button>`).join("")}
+              <button class="eintrag laufzettel" data-a="scanTreffer" data-nr="X-0000-99999"><span class="qr">${qrBild("fremd")}</span><span class="stapel wachse"><span class="fett">Fremder Code</span><span class="leise">zeigt die Meldung bei unbekanntem Code</span></span>${I("pfeil")}</button></div></section>
+          <form class="karte innen" data-senden="nummerSuchen" novalidate><label class="fett" for="nr">Oder Auftragsnummer eingeben</label>
+            <div class="zeile"><input class="eingabe zahl wachse" id="nr" name="nr" inputmode="numeric" placeholder="${PS.heute().slice(0, 4)}-00402" autocomplete="off"><button class="knopf" type="submit">Öffnen</button></div>
+            <p class="fehler" id="scanFehler" role="alert" ${PS._scanFehler ? "" : "hidden"}>${e(PS._scanFehler || "")}</p></form>
+        </div></div>`,
+    });
+  }
+  function oeffneNummer(nr) {
+    const roh = String(nr || "").trim();
+    const kurz = /^\d{1,5}$/.test(roh) ? `${PS.heute().slice(0, 4)}-${roh.padStart(5, "0")}` : roh;
+    const a = PS.z.auftraege.find((x) => x.nr === kurz);
+    if (!a) {
+      PS._scanFehler =
+        "Dieser Code gehört zu keinem Auftrag. Bitte den Laufzettel prüfen oder die Auftragsnummer eintippen.";
+      PS.render();
+      PS.meldung("Unbekannter Code", "warn");
+      return;
+    }
+    if (a.techniker !== ich()) {
+      PS._scanFehler = `Auftrag ${a.nr} ist Ihnen nicht zugewiesen. Bitte bei der Verwaltung melden.`;
+      PS.render();
+      return;
+    }
+    PS._scanFehler = "";
+    stoppeKamera();
+    PS.nav.pop();
+    PS.geh("auftrag", { id: a.id });
+  }
+  PS.aktionen.scanTreffer = (el) => {
+    const s = document.getElementById("scanner");
+    if (s) s.style.outline = "4px solid #4fd18b";
+    setTimeout(() => oeffneNummer(el.dataset.nr), 350);
+  };
+  PS.aktionen.nummerSuchen = (form, d) => oeffneNummer(d.get("nr"));
+  async function starteKamera() {
+    const v = document.getElementById("kamera");
+    const text = document.getElementById("scanText");
+    if (!v) return;
+    try {
+      if (!strom)
+        strom = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false,
+        });
+      v.srcObject = strom;
+      v.hidden = false;
+      await v.play();
+      text.textContent = "QR-Code in den Rahmen halten";
+      if ("BarcodeDetector" in window) {
+        const det = new window.BarcodeDetector({ formats: ["qr_code"] });
+        const lauf = async () => {
+          if (!document.getElementById("kamera")) return;
+          try {
+            const r = await det.detect(v);
+            if (r[0]) {
+              oeffneNummer(r[0].rawValue.replace(/^.*?(\d{4}-\d{5}).*$/, "$1"));
+              return;
+            }
+          } catch {
+            /* weiter */
+          }
+          erkennung = requestAnimationFrame(lauf);
+        };
+        lauf();
+      }
+    } catch {
+      if (text) text.textContent = "Kamera hier nicht verfügbar – Laufzettel rechts antippen";
+    }
+  }
+  function stoppeKamera() {
+    cancelAnimationFrame(erkennung);
+    if (strom) {
+      strom.getTracks().forEach((t) => t.stop());
+      strom = null;
+    }
+  }
+
+  // ---------- Mein Tag (LST-11) ----------
+  function tag() {
+    const heute = PS.heute();
+    const erf = PS.z.erfassungen.filter((x) => x.von === ich() && x.tag === heute);
+    const min = erf.filter((x) => x.art === "zeit").reduce((s, x) => s + x.minuten, 0);
+    const leist = erf.filter((x) => x.art === "leistung");
+    const wert = leist.reduce((s, x) => s + x.menge * x.preis, 0);
+    const pruefen = PS.z.erfassungen.filter((x) => x.von === ich() && x.pruefen);
+    const proAuftrag = {};
+    for (const x of erf) (proAuftrag[x.auftrag] = proAuftrag[x.auftrag] || []).push(x);
+    return schale({
+      titel: "Mein Tag",
+      unter: `${PS.wochentag(heute)}, ${PS.datum(heute)}`,
+      zurueck: true,
+      inhalt: `<div class="kacheln" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+          <div class="kachel"><span class="wert">${PS.stunden(min)}</span><span class="was">erfasste Arbeitszeit</span></div>
+          <div class="kachel"><span class="wert">${leist.reduce((s, x) => s + x.menge, 0)}</span><span class="was">Leistungen</span></div>
+          <div class="kachel"><span class="wert" style="font-size:1.75rem">${PS.euro(wert)}</span><span class="was">Wert netto</span></div></div>
+        ${pruefen.length ? `<div class="hinweis gelb">${I("warn")}<p>${PS.mehrzahl(pruefen.length, "Timer lief", "Timer liefen")} länger als 10 Stunden und ${pruefen.length === 1 ? "ist" : "sind"} zur Prüfung markiert (${pruefen.map((x) => PS.tagName(x.tag)).join(", ")}). Die Verwaltung schaut drüber.</p></div>` : ""}
+        ${
+          Object.keys(proAuftrag).length
+            ? Object.entries(proAuftrag)
+                .map(([id, xs]) => {
+                  const a = PS.auftrag(id);
+                  return `<section class="abschnitt"><h2>Auftrag ${a.nr} · ${e(PS.praxis(a.praxis).kurz)}</h2><div class="liste">${xs.map((x) => eintragZeile(x, a)).join("")}</div></section>`;
+                })
+                .join("")
+            : `<div class="leer">${I("uhr")}<p>Heute noch nichts erfasst.</p></div>`
+        }
+        <p class="leise klein">Die Tagessumme ist die Summe der Einzelbuchungen.</p>`,
+    });
+  }
+
+  // ---------- Verbindung (LST-12, A8) ----------
+  function setzeOffline(aus) {
+    if (ip().offline === aus) return;
+    ip().offline = aus;
+    if (!aus) {
+      const ng = PS.z.erfassungen.filter((x) => !x.gesendet);
+      ng.forEach((x) => {
+        x.gesendet = true;
+      });
+      PS.render();
+      PS.meldung(
+        ng.length
+          ? `WLAN wieder da · ${PS.mehrzahl(ng.length, "Eintrag", "Einträge")} gesendet, jeder genau einmal`
+          : "WLAN wieder da",
+      );
+    } else {
+      PS.render();
+      PS.meldung("Keine Verbindung – Eingaben bleiben auf dem iPad", "warn");
+    }
+  }
+  PS.aktionen.wlan = () => setzeOffline(!ip().offline);
+  PS.aktionen.wlanUmschalten = () => {
+    PS.schliesseBlatt(true);
+    setzeOffline(!ip().offline);
+  };
+  window.addEventListener("offline", () => {
+    if (PS.z && PS.z.modus === "ipad") setzeOffline(true);
+  });
+  window.addEventListener("online", () => {
+    if (PS.z && PS.z.modus === "ipad") setzeOffline(false);
+  });
+
+  // ---------- Modul ----------
+  PS.module.ipad = {
+    render() {
+      if (!ich()) {
+        stoppeKamera();
+        return anmeldung();
+      }
+      if (!PS.nav.length) PS.nav = [{ name: "auftraege" }];
+      const v = PS.ansicht();
+      if (v.name !== "scan") {
+        stoppeKamera();
+        PS._scanFehler = PS._scanFehler && v.name === "scan" ? PS._scanFehler : "";
+      }
+      return ({ auftraege, auftrag: auftragAnsicht, scan, tag }[v.name] || auftraege)(v);
+    },
+    nachRender() {
+      if (ip().wackeln)
+        setTimeout(() => {
+          ip().wackeln = false;
+        }, 400);
+      const v = PS.ansicht();
+      if (ich() && v && v.name === "scan") starteKamera();
+      if (ich() && !ip().liveGezeigt) planeLiveZuweisung();
+    },
+    tick() {
+      if (!ich()) return;
+      const r = restMs();
+      if (r <= 0) {
+        ip().person = null;
+        PS.nav = [];
+        PS.schliesseBlatt(true);
+        PS.render(true);
+        PS.meldung("Nach 5 Minuten ohne Eingabe abgemeldet", "info");
+        return;
+      }
+      const box = document.getElementById("restZeit");
+      if (r <= 30000 && !box) PS.render();
+      else if (box) box.textContent = `0:${String(Math.ceil(r / 1000)).padStart(2, "0")}`;
+    },
+    vorfuehrExtra() {
+      return `<div class="liste">
+        <button class="eintrag" data-a="liveZuweisen"><span class="stapel wachse"><span class="fett">Neuen Auftrag zuweisen (live)</span><span class="leise">So sieht es aus, wenn die Verwaltung zuweist</span></span>${I("pfeil")}</button>
+        <button class="eintrag" data-a="wlanUmschalten"><span class="stapel wachse"><span class="fett">${ip().offline ? "WLAN wieder einschalten" : "WLAN-Ausfall vorführen"}</span><span class="leise">Eingaben bleiben im Gerät und werden genau einmal nachgesendet</span></span>${I("pfeil")}</button>
+      </div>`;
+    },
+  };
+})();
+
+/* Perfect Smile · Vorschau – Labor-Display (KAL-01 bis KAL-03, DS-07: nie Patientenname oder -kürzel). */
+(function () {
+  "use strict";
+  const PS = window.PS;
+  const e = PS.esc;
+  const I = PS.icon;
+  const TAKT_MS = 30000; // KAL-03 Startwert
+  let letzte = 0;
+  const d = () => PS.z.display;
+
+  function eintrag(a) {
+    const amp = PS.ampel(a);
+    const tech = a.techniker || "–";
+    return `<div class="display-eintrag ${amp}">
+      <span class="nr">${a.nr}</span>
+      <span class="rechts" style="grid-row:span 2"><span class="tech">${e(tech)}</span><span class="st">${PS.STATUS[a.status]}</span></span>
+      <span class="praxis">${e(PS.praxis(a.praxis).kurz)} · ${e(a.arbeitsart)}${amp === "rot" ? ` · <span class="ueber">seit ${PS.datumKurz(a.termin)}</span>` : ""}</span>
+    </div>`;
+  }
+  function spalte(titel, unter, gruppen, max) {
+    let n = 0,
+      rest = 0,
+      html = "";
+    for (const [kopf, liste] of gruppen) {
+      if (!liste.length) continue;
+      if (kopf) html += `<div class="display-tag">${kopf}</div>`;
+      for (const a of liste) {
+        if (n < max) {
+          html += eintrag(a);
+          n++;
+        } else rest++;
+      }
+    }
+    if (!html)
+      html = `<div class="display-eintrag"><span class="praxis" style="color:var(--d-leise)">Keine Liefertermine</span></div>`;
+    const gesamt = gruppen.reduce((s, [, l]) => s + l.length, 0);
+    return `<section class="display-spalte"><h2>${titel}<span>${unter} · ${gesamt}</span></h2><div class="display-liste">${html}</div>${rest ? `<div class="display-mehr">+ ${rest} weitere</div>` : ""}</section>`;
+  }
+
+  PS.module.display = {
+    render() {
+      const heute = PS.heute();
+      const morgen = PS.plusArbeitstage(heute, 1);
+      const offen = PS.z.auftraege
+        .filter((a) => PS.OFFEN.includes(a.status))
+        .sort((a, b) => a.termin.localeCompare(b.termin) || a.nr.localeCompare(b.nr));
+      const ueber = offen.filter((a) => a.termin < heute);
+      const heuteL = offen.filter((a) => a.termin === heute);
+      const morgenL = offen.filter((a) => a.termin === morgen);
+      const woche = [];
+      for (let i = 2; i <= 5; i++) {
+        const t = PS.plusArbeitstage(heute, i);
+        woche.push([`${PS.wochentag(t)} ${PS.datumKurz(t)}`, offen.filter((a) => a.termin === t)]);
+      }
+      const stand = new Date(d().stand);
+      if (!letzte) letzte = Date.now();
+      return `<div class="display" role="main">
+        <header class="display-kopf">
+          <span class="logo">${PS.logoZeichen()} Liefertermine</span>
+          <span class="display-stand ${d().offline ? "weg" : ""}" id="displayStand"><i></i>${d().offline ? `Keine Verbindung · letzte Aktualisierung ${PS.zeit(stand)} Uhr` : `Aktualisiert ${PS.zeit(stand)} Uhr`}</span>
+          <div class="display-uhr"><b data-uhr="min">${PS.zeit(new Date())}</b><span>${PS.wochentag(heute)}, ${PS.datum(heute)}</span></div>
+          <button class="icon-knopf" data-a="vollbild" aria-label="Vollbild">${I("vollbild")}</button>
+          <button class="icon-knopf" data-a="vorfuehren" aria-label="Vorführen">${I("vorfuehren")}</button>
+        </header>
+        <div class="display-spalten">
+          ${spalte(
+            "Heute",
+            PS.datumKurz(heute),
+            [
+              ["Überfällig", ueber],
+              [ueber.length ? "Heute fällig" : "", heuteL],
+            ],
+            9,
+          )}
+          ${spalte("Morgen", `${PS.wochentag(morgen)} ${PS.datumKurz(morgen)}`, [["", morgenL]], 9)}
+          ${spalte("Diese Woche", "folgende Tage", woche, 9)}
+        </div>
+        <footer class="display-fuss"><span class="legende-d"><span class="l-rot">überfällig</span><span class="l-gelb">heute fällig</span><span>Kürzel = Techniker</span></span><span>Nur lesen · ohne Patientendaten · aktualisiert sich alle 30 Sekunden</span></footer>
+      </div>`;
+    },
+    nachRender() {
+      PS.wachHalten();
+    },
+    tick() {
+      if (Date.now() - letzte < TAKT_MS) return;
+      letzte = Date.now();
+      if (!d().offline && navigator.onLine !== false) d().stand = new Date().toISOString();
+      PS.render();
+    },
+    vorfuehrExtra() {
+      return `<div class="liste"><button class="eintrag" data-a="displayNetz"><span class="stapel wachse"><span class="fett">${d().offline ? "Verbindung wiederherstellen" : "Verbindungsabbruch vorführen"}</span><span class="leise">Das Display zeigt dann „Keine Verbindung“ und die letzte Uhrzeit</span></span>${I("pfeil")}</button></div>`;
+    },
+  };
+  PS.aktionen.vollbild = () => PS.vollbild();
+  PS.aktionen.displayNetz = () => {
+    d().offline = !d().offline;
+    if (!d().offline) d().stand = new Date().toISOString();
+    PS.schliesseBlatt(true);
+    PS.render();
+  };
+  window.addEventListener("offline", () => {
+    if (PS.z && PS.z.modus === "display") {
+      d().offline = true;
+      PS.render();
+    }
+  });
+  window.addEventListener("online", () => {
+    if (PS.z && PS.z.modus === "display") {
+      d().offline = false;
+      d().stand = new Date().toISOString();
+      PS.render();
+    }
+  });
+})();
+
+/* Perfect Smile · Vorschau – Übersicht: welches Gerät zeigen? */
+(function () {
+  "use strict";
+  const PS = window.PS;
+  const I = PS.icon;
+
+  const bildHandy = `<svg viewBox="0 0 80 110" fill="none" aria-hidden="true"><rect x="16" y="4" width="48" height="102" rx="10" fill="var(--flaeche)" stroke="currentColor" stroke-width="3"/><rect x="22" y="16" width="36" height="10" rx="3" fill="currentColor" opacity=".25"/><rect x="22" y="31" width="36" height="22" rx="4" fill="currentColor" opacity=".14"/><rect x="22" y="57" width="36" height="22" rx="4" fill="currentColor" opacity=".14"/><rect x="22" y="84" width="36" height="9" rx="4.5" fill="currentColor"/></svg>`;
+  const bildIpad = `<svg viewBox="0 0 150 110" fill="none" aria-hidden="true"><rect x="6" y="6" width="138" height="98" rx="10" fill="var(--flaeche)" stroke="currentColor" stroke-width="3"/><rect x="16" y="16" width="118" height="9" rx="3" fill="currentColor" opacity=".25"/><rect x="16" y="31" width="70" height="30" rx="4" fill="currentColor" opacity=".14"/><rect x="16" y="66" width="70" height="28" rx="4" fill="currentColor" opacity=".14"/><rect x="92" y="31" width="42" height="12" rx="4" fill="currentColor"/><rect x="92" y="48" width="42" height="46" rx="4" fill="currentColor" opacity=".14"/></svg>`;
+  const bildDisplay = `<svg viewBox="0 0 160 110" fill="none" aria-hidden="true"><rect x="4" y="8" width="152" height="84" rx="6" fill="#0f1b27" stroke="currentColor" stroke-width="3"/><rect x="62" y="92" width="36" height="12" fill="currentColor" opacity=".5"/><g fill="#6cc4f0" opacity=".9"><rect x="12" y="20" width="42" height="64" rx="3" opacity=".25"/><rect x="59" y="20" width="42" height="64" rx="3" opacity=".25"/><rect x="106" y="20" width="42" height="64" rx="3" opacity=".25"/></g><rect x="12" y="26" width="42" height="8" fill="#ff6b5e"/><rect x="12" y="38" width="42" height="8" fill="#ffd24d"/></svg>`;
+
+  PS.module.start = {
+    render() {
+      return `<div class="start"><div class="start-innen">
+        <header class="zeile" style="justify-content:space-between;flex-wrap:wrap;gap:12px"><span class="logo" style="font-size:1.375rem">${PS.logoZeichen()} Perfect Smile</span><span class="demo-band">Vorschau · erfundene Daten</span></header>
+        <div class="abstand-8" style="gap:12px"><h1>Das neue Labor-System auf Handy, iPad und Labor-Display</h1>
+          <p class="lead">Antippen und ausprobieren. Alles läuft direkt auf dem Gerät, auch ohne Internet. Alle Praxen, Personen und Aufträge sind erfunden.</p></div>
+        <div class="geraete">
+          <button class="geraet" data-a="modus" data-m="handy"><div class="bild">${bildHandy}</div><h2>Handy</h2>
+            <ul><li>Fahrer: Tour von heute, Lieferung und Abholung bestätigen, Kilometerstand</li><li>Inhaberin: Tagesüberblick, Aufträge, Rechnungen freigeben, Kennzahlen</li></ul>
+            <span class="knopf voll">${I("handy")} Handy-Vorschau öffnen</span></button>
+          <button class="geraet" data-a="modus" data-m="ipad"><div class="bild">${bildIpad}</div><h2>iPad im Labor</h2>
+            <ul><li>Anmeldung mit 6-stelliger PIN</li><li>Meine Aufträge, Timer, Leistung in 4 Berührungen</li><li>Arbeitet weiter, wenn das WLAN ausfällt</li></ul>
+            <span class="knopf voll">${I("tablet")} iPad-Vorschau öffnen</span></button>
+          <button class="geraet" data-a="modus" data-m="display"><div class="bild">${bildDisplay}</div><h2>Labor-Display</h2>
+            <ul><li>Liefertermine Heute, Morgen, Woche</li><li>Rot überfällig, gelb heute fällig</li><li>Ohne Anmeldung, ohne Patientendaten</li></ul>
+            <span class="knopf voll">${I("bildschirm")} Display-Vorschau öffnen</span></button>
+        </div>
+        <section class="installieren">
+          <div class="karte innen"><h2 style="font-size:1.125rem">Wie eine App auf dem Home-Bildschirm</h2><p>Die echte Anwendung ist eine Web-App: einmal im Browser öffnen, „Zum Home-Bildschirm“ wählen, fertig. Kein App Store, keine Updates von Hand.</p>
+            ${PS.istInstalliert() ? `<p class="fett" style="color:var(--gruen)">${I("check").replace("<svg", '<svg style="width:20px;height:20px;vertical-align:-4px"')} Läuft gerade als installierte App.</p>` : `<button class="knopf weich" data-a="installieren">${I("teilen")} So geht’s</button>`}</div>
+          <div class="karte innen"><h2 style="font-size:1.125rem">Datenschutz eingebaut</h2><p>Patientennamen sind verschlüsselt und erscheinen nie auf dem Display, in Adressen oder Fehlermeldungen. Jede Rolle sieht nur, was sie braucht. Hosting in Deutschland oder der EU.</p></div>
+        </section>
+        <p class="leise klein">Vorschau-Stand ${PS.datum(PS.heute())}. Die Vorschau zeigt die Abläufe der echten Anwendung mit Beispieldaten; Eingaben bleiben nur auf diesem Gerät.</p>
+      </div></div>`;
+    },
+  };
+})();
+
+PS.MIT_SW = true; PS.STAND = "2026-11-11";
+PS.starte("display");
+</script>
+</body>
+</html>

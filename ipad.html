@@ -5307,7 +5307,7 @@ textarea.eingabe {
         </div>
         <section class="installieren">
           <div class="karte innen"><h2 style="font-size:1.125rem">Wie eine App auf dem Home-Bildschirm</h2><p>Die echte Anwendung ist eine Web-App: einmal im Browser öffnen, „Zum Home-Bildschirm“ wählen, fertig. Kein App Store, keine Updates von Hand.</p>
-            ${PS.istInstalliert() ? `<p class="fett" style="color:var(--gruen)">${I("check").replace("<svg", '<svg style="width:20px;height:20px;vertical-align:-4px"')} Läuft gerade als installierte App.</p>` : `<button class="knopf weich" data-a="installieren">${I("teilen")} So geht’s</button>`}</div>
+            ${PS.istInstalliert() ? `<p class="fett" style="color:var(--gruen)">${I("check").replace("<svg", '<svg style="width:20px;height:20px;vertical-align:-4px"')} Läuft gerade als installierte App.</p>` : `<div class="umbruch"><button class="knopf weich" data-a="installieren">${I("teilen")} So geht’s</button>${PS.MIT_SW && /Android/i.test(navigator.userAgent) ? `<a class="knopf zweit" href="PerfectSmile-Vorschau.apk" download>${I("runter")} Android-App (APK)</a>` : ""}</div>`}</div>
           <div class="karte innen"><h2 style="font-size:1.125rem">Datenschutz eingebaut</h2><p>Patientennamen sind verschlüsselt und erscheinen nie auf dem Display, in Adressen oder Fehlermeldungen. Jede Rolle sieht nur, was sie braucht. Hosting in Deutschland oder der EU.</p></div>
         </section>
         <p class="leise klein">Vorschau-Stand ${PS.datum(PS.heute())}. Die Vorschau zeigt die Abläufe der echten Anwendung mit Beispieldaten; Eingaben bleiben nur auf diesem Gerät.</p>

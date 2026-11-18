@@ -2665,11 +2665,27 @@ textarea.eingabe {
   ];
 
   const MATERIAL = [
-    { id: "m1", name: "Zirkonoxid-Ronde 98 mm", hersteller: "Beispiel Dental" },
-    { id: "m2", name: "Verblendkeramik Dentin A2", hersteller: "Muster Keramik" },
-    { id: "m3", name: "Superhartgips Klasse 4", hersteller: "Testgips" },
-    { id: "m4", name: "Modellguss-Legierung CoCr", hersteller: "Beispiel Metall" },
-    { id: "m5", name: "Tiefziehfolie 1,5 mm", hersteller: "Folien Muster" },
+    // D-065: bekannte Chargen zum Antippen (erfunden)
+    {
+      id: "m1",
+      name: "Zirkonoxid-Ronde 98 mm",
+      hersteller: "Beispiel Dental",
+      chargen: ["Z3-26-118", "Z3-26-121"],
+    },
+    {
+      id: "m2",
+      name: "Verblendkeramik Dentin A2",
+      hersteller: "Muster Keramik",
+      chargen: ["VK-26-044"],
+    },
+    { id: "m3", name: "Superhartgips Klasse 4", hersteller: "Testgips", chargen: ["G4-2611"] },
+    {
+      id: "m4",
+      name: "Modellguss-Legierung CoCr",
+      hersteller: "Beispiel Metall",
+      chargen: ["CC-2610-7"],
+    },
+    { id: "m5", name: "Tiefziehfolie 1,5 mm", hersteller: "Folien Muster", chargen: [] },
   ];
 
   const PRAXEN = {
@@ -4804,7 +4820,13 @@ textarea.eingabe {
     return `<h2>Material und Charge</h2>
       <div class="feld"><span class="label">Position</span><div class="chips">${a.positionen.map((p, i) => `<button class="chip" data-a="matPos" data-id="${p.id}" aria-pressed="${p.id === s.position}">${i + 1}. ${e(PS.leistung(p.nr).bezeichnung)}</button>`).join("")}</div></div>
       <div class="feld"><span class="label">Material</span><div class="auswahl-gitter">${PS.z.material.map((m) => `<button class="auswahl" data-a="matWahl" data-id="${m.id}" aria-pressed="${m.id === s.material}"><span>${e(m.name)}</span><span class="leise">${e(m.hersteller)}</span></button>`).join("")}</div></div>
-      <div class="feld"><label for="charge">Chargennummer</label><input class="eingabe" id="charge" placeholder="z. B. 2026-118" autocomplete="off" value="${e(s.charge || "")}"></div>
+      ${(() => {
+        const bekannte = (PS.z.material.find((m) => m.id === s.material) || {}).chargen || [];
+        return bekannte.length
+          ? `<div class="feld"><span class="label">Charge antippen</span><div class="chips">${bekannte.map((c) => `<button class="chip" data-a="matCharge" data-id="${e(c)}" aria-pressed="${c === s.charge}">${e(c)}</button>`).join("")}</div></div>`
+          : "";
+      })()}
+      <div class="feld"><label for="charge">oder neue Chargennummer</label><input class="eingabe" id="charge" placeholder="z. B. 2026-118" autocomplete="off" value="${e(s.charge || "")}"></div>
       <div class="knoepfe"><button class="knopf gross" data-a="matSpeichern">Speichern</button><button class="knopf gross zweit" data-a="blattZu">Abbrechen</button></div>`;
   }
   function chargeMerken() {
@@ -4819,6 +4841,12 @@ textarea.eingabe {
   PS.aktionen.matWahl = (el) => {
     chargeMerken();
     PS._mat.material = el.dataset.id;
+    PS._mat.charge = "";
+    blattNeu(matBlatt());
+  };
+  // D-065: Charge aus der Liste mit einer Berührung
+  PS.aktionen.matCharge = (el) => {
+    PS._mat.charge = el.dataset.id;
     blattNeu(matBlatt());
   };
   PS.aktionen.matSpeichern = () => {
@@ -5316,7 +5344,7 @@ textarea.eingabe {
   };
 })();
 
-PS.MIT_SW = true; PS.STAND = "2026-11-11";
+PS.MIT_SW = true; PS.STAND = "2026-11-18";
 PS.starte(null);
 </script>
 </body>
